@@ -1,0 +1,49 @@
+node {
+   def container
+   def port = getPort()
+   stage('Preparation') {
+      cleanWs()
+      echo "PORT " + port
+      git 'https://github.com/Emmerson-Miranda/camel.git'
+   }
+   stage('Build') {
+        // Run the maven build
+        sh "cd helloworld-camel-spring-boot && mvn -Dmaven.test.failure.ignore clean package docker:build"
+        def pom = readMavenPom file:'helloworld-camel-spring-boot/pom.xml'
+        print "POM VERSION READ FROM GROOVY: " + pom.version
+        env.version = pom.version
+        env.artifactId = pom.artifactId
+   }
+   stage ('Run') {
+        container = docker.image("${env.artifactId}:${env.version}").run('-p ' + port + ':8080')
+        timeout(3) {
+            waitUntil {
+               script {
+                 def r = sh script: 'wget -q http://localhost:' + port + '/camel/say/hello/ -O /dev/null', returnStatus: true
+                 return (r == 0);
+               }
+            }
+        }
+   }
+   stage ('Testing') {
+        print "Running SOAPUI tet"
+        sh "/home/mdgdev/SmartBear/SoapUI-5.3.0/bin/testrunner.sh -P PARAM_ADD_PORT=" + port + " -j -r helloworld-camel-spring-boot/src/test/resources/helloworld-camel-spring-boot-soapui-project.xml "
+        junit 'TEST-TestSuite.xml'
+        //sh "ls -la"
+   }
+   stage ('Stop') {
+        container.stop()
+   }
+}
+
+def getPort() {
+    def port = 60000
+    try {
+        def serverSocket = new ServerSocket(0)
+        port = serverSocket.getLocalPort()
+        serverSocket.close()
+    } catch (IOException ex) {
+        System.err.println("no available ports")
+    }
+    return port
+}
