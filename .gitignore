@@ -10,3 +10,7 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+.DS_Store
+helloworld-camel-spring-boot/.classpath
+helloworld-camel-spring-boot/.settings/org.eclipse.jdt.core.prefs
+camel-java8-activemq/.classpath
