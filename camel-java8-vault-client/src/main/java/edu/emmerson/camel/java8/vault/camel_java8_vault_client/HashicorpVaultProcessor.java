@@ -15,7 +15,7 @@ public class HashicorpVaultProcessor {
 		LinkedHashMap<String, Object> m = exchange.getIn().getBody(LinkedHashMap.class);
 
 		LinkedHashMap<String, Object> lhm = new LinkedHashMap<String, Object>();
-		lhm.put("keyname", exchange.getIn().getHeader("keyname"));
+		lhm.put("keyname", exchange.getProperty("keyname"));
 		lhm.put("value", m.get("data"));
 		exchange.getIn().setBody(lhm);
 

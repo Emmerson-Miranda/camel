@@ -61,17 +61,17 @@ Calling microservice from command line.
 
 ```
 $ curl http://127.0.0.1:8080/proxy/resolve/key?keyname=v1/cubbyhole/uno
-{"keyname":null,"value":{"1":"uno"}}
+{"keyname":"v1/cubbyhole/uno","value":{"1":"uno"}}
 ```
 
 ```
 $ curl http://127.0.0.1:8080/proxy/resolve/key?keyname=v1/cubbyhole/dos
-{"keyname":null,"value":{"password":"dos-2","username":"dos-1"}}
+{"keyname":"v1/cubbyhole/dos","value":{"password":"dos-2","username":"dos-1"}}
 ```
 
 ```
 $ curl http://127.0.0.1:8080/proxy/resolve/key?keyname=v1/cubbyhole/tres
-{"keyname":null,"value":{"city":{"country":"Spain","name":"Barcelona"},"name":"Emmerson"}}
+{"keyname":"v1/cubbyhole/tres","value":{"city":{"country":"Spain","name":"Barcelona"},"name":"Emmerson"}}
 ```
 
 ```
