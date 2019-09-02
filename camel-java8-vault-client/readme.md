@@ -54,7 +54,7 @@ $ curl --header "X-Vault-Token: $VAULT_TOKEN" http://127.0.0.1:8200/v1/cubbyhole
 ```
 
 
-Testing 
+Testing Camel-Vault-Client Project
 ------------------
 
 Calling microservice from command line.
