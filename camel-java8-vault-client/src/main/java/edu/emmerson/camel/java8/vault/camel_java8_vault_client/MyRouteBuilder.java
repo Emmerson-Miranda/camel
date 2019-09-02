@@ -1,34 +1,35 @@
 package edu.emmerson.camel.java8.vault.camel_java8_vault_client;
 
-import org.apache.camel.Exchange;
+import static edu.emmerson.camel.java8.vault.camel_java8_vault_client.Constants.QUERYPARAM_KEYNAME;
+import static edu.emmerson.camel.java8.vault.camel_java8_vault_client.Constants.X_VAULT_TOKEN;
+
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.http.common.HttpOperationFailedException;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestParamType;
 
-import com.fasterxml.jackson.core.JsonParseException;
 
-import static edu.emmerson.camel.java8.vault.camel_java8_vault_client.Constants.*;
-
-/**
- * A Camel Java8 DSL Router
- */
 public class MyRouteBuilder extends RouteBuilder {
 
 	public void configure() {
 
+		onException(Exception.class)
+			.handled(true)
+			.bean(ExceptionProcessor.class)
+			.marshal().json(JsonLibrary.Jackson)
+		.end();
+
 		restConfiguration().component("undertow")
-			.contextPath("proxy")
-			.apiContextPath("/api-doc")
-			.host("0.0.0.0")
-			.port(8080);
+			.contextPath("proxy").apiContextPath("/api-doc")
+			.host("0.0.0.0").port(8080);
 
 		rest("/resolve")
 			.get("/key")
 				.param().name(QUERYPARAM_KEYNAME)
-					.type(RestParamType.query).defaultValue("false").description("Key to resolve").endParam()
+					.type(RestParamType.query).defaultValue("false").description("Key to resolve")
+				.endParam()
 				.produces("application/json")
-				.description("Resolve consul/vault keys").outType(java.util.LinkedHashMap.class)
+				.description("Resolve consul/vault keys")
+				.outType(java.util.LinkedHashMap.class)
 				.to("direct:vault");
 
 		from("direct:vault")
@@ -36,16 +37,8 @@ public class MyRouteBuilder extends RouteBuilder {
 			.setProperty(QUERYPARAM_KEYNAME, simple("${headers.keyname}"))
 			.toD("undertow:${properties:PARAM_VAULT_URL}/${headers.keyname}")
 				.unmarshal().json(JsonLibrary.Jackson)
-				.bean(HashicorpVaultProcessor.class).marshal()
-				.json(JsonLibrary.Jackson)
-			.onException(HttpOperationFailedException.class)
-				.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
-				.setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
-				.setBody().constant("{message='Failure getting key from vault server'}")
-			.onException(JsonParseException.class)
-				.handled(true).setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
-				.setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-				.setBody().constant("Invalid json data");
+				.bean(HashicorpVaultProcessor.class)
+				.marshal().json(JsonLibrary.Jackson);
 	}
 
 }
