@@ -5,7 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * A Camel Java8 DSL Router
  */
-public class MyRouteBuilder extends RouteBuilder {
+public class BillCreateRouteBuilder extends RouteBuilder {
 
     public void configure() {
 
@@ -22,9 +22,10 @@ public class MyRouteBuilder extends RouteBuilder {
 				.outType(Bill.class)
 				.to("direct:createbill");
 	
+		//http://127.0.0.1:8200
 		from("direct:createbill")
-			.log("requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
-			.setBody().simple("${body}");
+			.log("appId=${sys.ENV_APP_ID} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
+			.toD("undertow:${properties:ENV_DISCOUNT_BACKEND_URL}/${headers.keyname}");
 		
     }
 

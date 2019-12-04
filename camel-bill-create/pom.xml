@@ -121,7 +121,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <configuration>
-          <mainClass>edu.emmerson.camel.bill.camel_bill_create.MainApp</mainClass>
+          <mainClass>edu.emmerson.camel.bill.camel_bill_create.BillCreateMainApp</mainClass>
           <includePluginDependencies>false</includePluginDependencies>
         </configuration>
       </plugin>

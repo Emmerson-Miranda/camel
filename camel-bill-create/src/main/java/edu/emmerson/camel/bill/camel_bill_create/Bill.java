@@ -4,6 +4,7 @@ public class Bill {
 	
 	private double amount;
 	private String customerType;
+	private double amountAfterDiscount;
 	
 	public double getAmount() {
 		return amount;
@@ -17,7 +18,11 @@ public class Bill {
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
 	}
-	
-	
+	public double getAmountAfterDiscount() {
+		return amountAfterDiscount;
+	}
+	public void setAmountAfterDiscount(double amountAfterDiscount) {
+		this.amountAfterDiscount = amountAfterDiscount;
+	}
 	
 }
