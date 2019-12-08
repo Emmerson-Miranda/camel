@@ -25,7 +25,7 @@ public class BillCreateRouteBuilder extends RouteBuilder {
 		//http://127.0.0.1:8200
 		from("direct:createbill")
 			.log("appId=${sys.ENV_APP_ID} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
-			.toD("undertow:${properties:ENV_DISCOUNT_BACKEND_URL}/${headers.keyname}");
+			.toD("${properties:ENV_DISCOUNT_BACKEND_URL}/${headers.keyname}");
 		
     }
 

@@ -26,7 +26,7 @@ public class BillCreateMainApp {
     	System.setProperty(ENV_TIER, StringUtils.isEmpty(tier) ? "dmz" : tier);
     	System.setProperty(ENV_APP_ID, BillCreateMainApp.class.getName());
     	if (System.getProperty(ENV_DISCOUNT_BACKEND_URL) == null) {
-			System.setProperty(ENV_DISCOUNT_BACKEND_URL, "http://127.0.0.1:8090/proxy/demo/discount");
+			System.setProperty(ENV_DISCOUNT_BACKEND_URL, "undertow:http://127.0.0.1:8090/proxy/demo/discount");
 		}
 
         Main main = new Main();
