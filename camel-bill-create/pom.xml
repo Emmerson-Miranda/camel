@@ -8,7 +8,7 @@
 	<groupId>edu.emmerson.camel.bill</groupId>
 	<artifactId>camel-bill-create</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>A Camel Route</name>
 
@@ -126,6 +126,37 @@
 					<includePluginDependencies>false</includePluginDependencies>
 				</configuration>
 			</plugin>
+			
+			<!-- Maven Assembly Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+
+				<configuration>
+					<!-- get all project dependencies -->
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<!-- MainClass in mainfest make a executable jar -->
+					<archive>
+						<manifest>
+							<mainClass>edu.emmerson.camel.bill.camel_bill_create.BillCreateMainApp</mainClass>
+						</manifest>
+					</archive>
+
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- bind to the packaging phase -->
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 
 
 			<!-- https://github.com/spotify/docker-maven-plugin -->
@@ -148,14 +179,14 @@
 					<exposes>
 						<expose>8080</expose>
 					</exposes>
-					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					<entryPoint>["java", "-jar", "/${project.build.finalName}-jar-with-dependencies.jar"]</entryPoint>
 					<!-- copy the service's jar file from target into the root directory 
 						of the image -->
 					<resources>
 						<resource>
 							<targetPath>/</targetPath>
 							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
+							<include>${project.build.finalName}-jar-with-dependencies.jar</include>
 						</resource>
 					</resources>
 					<imageTags>
