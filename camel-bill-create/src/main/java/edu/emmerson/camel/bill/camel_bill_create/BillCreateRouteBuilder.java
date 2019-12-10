@@ -15,17 +15,28 @@ public class BillCreateRouteBuilder extends RouteBuilder {
 		.port(8080);
 
 		rest("/demo")
+			.get("/prove/liveness")
+				.to("direct:liveness")
+			.get("/prove/readiness")
+				.to("direct:readiness")		
 			.post("/bill")
 				.produces("application/json")
 				.consumes("application/json")
 				.description("Demo bill")
 				.outType(Bill.class)
 				.to("direct:createbill");
-	
-		//http://127.0.0.1:8200
+		
+		from("direct:liveness")
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=Liveness")
+			.bean(LivenessProcessor.class);
+		
+		from("direct:readiness")
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=Readiness")
+			.toD("${properties:ENV_DISCOUNT_BACKEND_URL}/prove/liveness");
+
 		from("direct:createbill")
-			.log("appId=${sys.ENV_APP_ID} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
-			.toD("${properties:ENV_DISCOUNT_BACKEND_URL}/${headers.keyname}");
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
+			.toD("${properties:ENV_DISCOUNT_BACKEND_URL}/discount");
 		
     }
 
