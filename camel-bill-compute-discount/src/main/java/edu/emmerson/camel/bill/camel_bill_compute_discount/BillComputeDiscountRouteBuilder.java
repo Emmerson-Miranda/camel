@@ -27,15 +27,15 @@ public class BillComputeDiscountRouteBuilder extends RouteBuilder {
 				.to("direct:createbill");
 		
 		from("direct:liveness")
-			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=Liveness")
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_NAME} tier=${sys.ENV_TIER} body=Liveness")
 			.bean(LivenessProcessor.class);
 		
 		from("direct:readiness")
-			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=Readiness")
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_NAME} tier=${sys.ENV_TIER} body=Readiness")
 			.bean(ReadinessProcessor.class);
 
 		from("direct:createbill")
-			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_TIER} tier=${sys.ENV_TIER} body=${body}")
+			.log("appId=${sys.ENV_APP_ID} hostname=${sys.HOSTNAME} requestId=${headers.X-Request-ID} programme=${sys.ENV_PROGRAMME} env=${sys.ENV_NAME} tier=${sys.ENV_TIER} body=${body}")
 			.unmarshal().json(JsonLibrary.Jackson)
 			.bean(BillComputeDiscountProcessor.class)
 			.marshal().json(JsonLibrary.Jackson);
