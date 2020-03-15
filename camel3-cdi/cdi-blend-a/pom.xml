@@ -35,6 +35,12 @@
 		<!-- ************************* BUNDLE COMPONENTS - BLOCK START ************************* -->
 
 		<dependency>
+			<groupId>edu.emmerson.camel3.cdi.shared</groupId>
+			<artifactId>cdi-shared</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>edu.emmerson.camel3.cdi.address</groupId>
 			<artifactId>cdi-address</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -190,7 +196,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>edu.emmerson.camel3.cdi.blenda.BlendAMainApp</mainClass>
+							<mainClass>edu.emmerson.camel3.cdi.shared.SharedMainApp</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 					</archive>
