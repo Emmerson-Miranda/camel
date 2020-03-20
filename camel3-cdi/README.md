@@ -128,6 +128,14 @@ Stop the image
 docker stop $(docker ps | grep "cdi-blenda" | awk '{print $1}')
 ```
 
+## cdi-rabbit-producer
+Pure Camel 3 CDI microservice that expose a HTTP endpoint and store messages in RabbitMQ.
+
+
+## cdi-rabbit-consumer
+Pure Camel 3 CDI microservice that read messages from RabbitMQ.
+
+
 # The Dependency Inyection
 Camel says:
 
