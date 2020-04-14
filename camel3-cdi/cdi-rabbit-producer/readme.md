@@ -22,6 +22,7 @@ Run following commands:
 $ curl -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID1" -H "test-scenario: ok" -X POST http://0.0.0.0:8080/rmq/publish
 
 $ curl -d "{\"ko\": \"value with error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID6" -H "test-scenario: ko" -X POST http://0.0.0.0:8080/rmq/publish
+
 ```
 
 

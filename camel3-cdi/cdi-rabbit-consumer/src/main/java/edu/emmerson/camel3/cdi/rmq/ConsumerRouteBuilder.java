@@ -11,67 +11,91 @@ import org.apache.camel.component.rabbitmq.RabbitMQConstants;
  */
 public class ConsumerRouteBuilder extends RouteBuilder {
 
-    @Override
-    public void configure() throws Exception {
+    private static final String ConsumerRouteID = ConsumerRouteBuilder.class.getName() + "-Consumer";
 
-        //
-    	//connection string
-    	//
-        StringBuilder sbConsumer = new StringBuilder();
+    public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
+	
+    
+    public static String getQueueEndpoint() {
+    	StringBuilder sbConsumer = new StringBuilder();
         sbConsumer.append("rabbitmq:myexchange?")
         .append("connectionFactory=#consumerConnectionFactoryService")
         .append("&queue=myqueue")
+        .append("&routingKey=main")
         .append("&durable=true")
         .append("&autoDelete=false")
         .append("&automaticRecoveryEnabled=true")
-        .append("&deadLetterExchange=myexchangeDLQ")
-        .append("&deadLetterExchangeType=direct")
-        .append("&deadLetterQueue=myqueueDLQ")
-        
         .append("&exclusive=false")
         .append("&autoAck=false")
         .append("&concurrentConsumers=2")
         .append("&prefetchCount=2")
         .append("&prefetchEnabled=true");
-          
+        return sbConsumer.toString();
+    }
+    
+    public static String getDLQEndpoint() {
+    	StringBuilder sbConsumer = new StringBuilder();
+        sbConsumer.append("rabbitmq:myexchange?")
+        .append("connectionFactory=#consumerConnectionFactoryService")
+        .append("&queue=myqueueDLQ")
+        .append("&durable=true")
+        .append("&autoDelete=false")
+        .append("&automaticRecoveryEnabled=true")
+        .append("&exchangePattern=InOnly")
+        .append("&routingKey=dlq")
+        .append("&exclusive=false")
+        .append("&autoAck=false") ;
+        return sbConsumer.toString();
+    }
+    
+	@Override
+    public void configure() throws Exception {
+
         //
-        //retries
+        //error handling
         //
         onException(Exception.class)
-        .useOriginalMessage()
-        .maximumRedeliveries(4)
-        .asyncDelayedRedelivery().redeliveryDelay(3000)
-    	.log("handling the exception - global - retry ${headers.rabbitmq.DELIVERY_TAG}")
-    	.choice()
-    		.when(header(RabbitMQConstants.DELIVERY_TAG).isEqualTo("2"))
-    			.log("third attempt, moving to DLQ")
-    		.otherwise()
-    			.log("Back to the queue, continue retrying!")
-    			.setHeader(RabbitMQConstants.REQUEUE, constant(true))
-    	.end();
+	        .maximumRedeliveries(2)
+	        .handled(true)
+	        .asyncDelayedRedelivery().redeliveryDelay(1000)
+	        .log("\"Error reported: ${exception.message} - cannot process this message.\" - retry ${headers.rabbitmq.DELIVERY_TAG}")
+	        .setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
+	        //sending the message to DLQ
+	        .toD(getDLQEndpoint())
+	    	.process().message(m -> {
+	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerRouteID, true, RABBITMQ_ROUTING_KEY);
+	        })
+	    	//notifiy all consumers to stop
+	    	.to(MngtProducerRouteBuilder.DIRECT_PUBLISH_MESSAGE_MNGT_PRODUCER_ENDPOINT)
+    	;
         
         //
         //consuming messages
         //
-        from(sbConsumer.toString())
-        .routeId(ConsumerRouteBuilder.class.getName() + "-Consumer")
-	    .to("direct:target");
+        from(getQueueEndpoint())
+	        .routeId(ConsumerRouteID)
+		    .to("direct:target");
 	    
         //
         //processing message
         //
         from("direct:target")
-        .log("Message to be sent: ${body}")
-        .log("Message to be sent: ${headers}")
-        .choice()
-        	.when(header("test-scenario").isEqualTo("ko"))
-        		.log("Simulating an exception")
-	        	.process((m) -> {
-	        		throw new Exception("Some error happen!");
-	        	})
-        	.otherwise()
-        		.log("Congrats, message well processed!")
-        .end();
+	        .routeId("ConsumerRouteBuilder-target-routeId")
+	        .log(">>> ...........................................................")
+	        .log("Message to be sent: ${body}")
+	        .log("Message to be sent: ${headers}")
+	        .choice()
+	        	.when(header("test-scenario").isEqualTo("ko"))
+	        		.log("Simulating an exception")
+		        	.process((m) -> {
+		        		throw new Exception("Some error happen!");
+		        	})
+	        	.otherwise()
+	        		.log("Congrats, message well processed!")
+	        .end()
+	
+	        .log("<<< ...........................................................")
+        ;
     }
 
 }

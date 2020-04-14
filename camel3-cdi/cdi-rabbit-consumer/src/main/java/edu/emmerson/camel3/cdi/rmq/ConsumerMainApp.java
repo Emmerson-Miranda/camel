@@ -6,6 +6,7 @@ public class ConsumerMainApp {
     	System.out.println("------------------- Starting with local main ConsumerMainApp -------------------");
         
     	edu.emmerson.camel3.cdi.shared.SharedMainApp.main(args);
+    	
     }
     
 }
