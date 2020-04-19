@@ -20,7 +20,8 @@ public class MngtRestRouteBuilder extends RouteBuilder {
             	.apiContextRouteId("api-doc-endpoint")
                 .apiProperty("api.title", "Producer API").apiProperty("api.version", "1.0.0")
                 .apiProperty("cors", "true");
-
+		
+		
         // this user REST service is json only
         rest("/mngt").id("mngt-endpoint").description("RabbitMQ Camel Management service")
             .consumes("application/json").produces("application/json")
@@ -31,6 +32,9 @@ public class MngtRestRouteBuilder extends RouteBuilder {
                 
             .get("/shutdown").id("mngt-endpoint-shutdown").description("Shutdown Apache Camel")
                 .to(ShutdownRouteBuilder.DIRECT_SHUTDOWN_MESSAGE_CONSUMERS_ENDPOINT)
+                
+            .get("/stats").id("mngt-endpoint-stats").description("Stats Apache Camel")
+                .to(StatsRouteBuilder.DIRECT_STATS)
         ;
         
     }

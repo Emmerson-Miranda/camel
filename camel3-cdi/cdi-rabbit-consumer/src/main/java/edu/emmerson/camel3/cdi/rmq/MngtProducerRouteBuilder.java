@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.camel.Message;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 
 
 public class MngtProducerRouteBuilder extends RouteBuilder {
@@ -44,8 +45,14 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+    	MetricsRoutePolicy mrp = new MetricsRoutePolicy();
+		mrp.setNamePattern(ConsumerConstants.MNGT_PRODUCER_ROUTE_ID);
+		mrp.setUseJmx(true);
+		mrp.setJmxDomain(ConsumerConstants.JMX_DOMAIN_NAME);
+		
         from(MngtProducerRouteBuilder.DIRECT_PUBLISH_MESSAGE_MNGT_PRODUCER_ENDPOINT)
-        .routeId(MngtProducerRouteBuilder.class.getName())
+        .routeId(ConsumerConstants.MNGT_PRODUCER_ROUTE_ID)
+        .routePolicy(mrp)
         .process().message(m -> {
         	m.setHeader("custom.messageId", UUID.randomUUID().toString());
 			m.setHeader("custom.currentTimeMillis", System.currentTimeMillis());

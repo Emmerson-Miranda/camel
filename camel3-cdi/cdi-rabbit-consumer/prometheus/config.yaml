@@ -1,0 +1,21 @@
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+
+rules:
+#- pattern: 'org.apache.camel(.*)'
+#  name: camel_last_processing_time
+#  help: Last Processing Time [milliseconds]
+#  type: GAUGE
+#  labels:
+#    route: $1
+
+- pattern: 'MyMetrics<name=(.*), type=(.*)><>(.*):(.*)'
+  name: camel3_$1_$3
+  help: $1-$3 [milliseconds]
+  type: GAUGE
+  labels:
+    type: $2
+    journey: $1
+    propname: $3
+
+
