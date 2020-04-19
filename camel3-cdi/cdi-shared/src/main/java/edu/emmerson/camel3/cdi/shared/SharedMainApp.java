@@ -8,7 +8,7 @@ public class SharedMainApp {
     	System.out.println("------------------- Starting with shared main library -------------------");
         Main main = new Main();
         main.run(args);
-        main.close();
+        //main.close();
     }
     
 }
