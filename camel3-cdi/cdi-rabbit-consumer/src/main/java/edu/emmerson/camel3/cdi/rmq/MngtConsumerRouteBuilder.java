@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 
 /**
  * 
@@ -43,11 +44,17 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
 	        .routeId(MngtConsumerRouteBuilder.class.getName() + "-Consumer")
 		    .to(DIRECT_TARGET_MNGT_ENDPOINT);
 	    
+        MetricsRoutePolicy mrp = new MetricsRoutePolicy();
+		mrp.setNamePattern(ConsumerConstants.MNGT_CONSUMER_ROUTE_ID);
+		mrp.setUseJmx(true);
+		mrp.setJmxDomain(ConsumerConstants.JMX_DOMAIN_NAME);	
+		
         //
         //processing message
         //	
         from(DIRECT_TARGET_MNGT_ENDPOINT)
-	        .routeId("MngtConsumerRouteBuilder-target-routeId")
+	        .routeId(ConsumerConstants.MNGT_CONSUMER_ROUTE_ID)
+	        .routePolicy(mrp)
 	        .log(">>> ------------------------------------------------------------------")
 	        .log("Mngt Message body: ${body}")
 	        .process().message(m -> {
@@ -56,7 +63,8 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
 				m.getExchange().setProperty("route-id", body.get("routeId"));
 				m.getExchange().setProperty("route-action", "true".equals(body.get("suspend")) ? "suspend" : "resume");
 	        })
-	        .toD("controlbus:route?routeId=${exchangeProperty.route-id}&action=${exchangeProperty.route-action}")
+	        //.toD("controlbus:route?routeId=${exchangeProperty.route-id}&action=${exchangeProperty.route-action}")
+	        .toD("controlbus:route?routeId=${exchangeProperty.route-id}&action=restart&restartDelay=10000")
 	        .toD("controlbus:route?routeId=${exchangeProperty.route-id}&action=status")
 	        .toD("controlbus:route?routeId=${exchangeProperty.route-id}&action=stats")
 	        .log("<<< ------------------------------------------------------------------")

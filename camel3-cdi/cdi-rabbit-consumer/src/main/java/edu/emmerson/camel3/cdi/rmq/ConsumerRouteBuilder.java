@@ -1,6 +1,7 @@
 package edu.emmerson.camel3.cdi.rmq;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 
 /**
@@ -10,8 +11,6 @@ import org.apache.camel.component.rabbitmq.RabbitMQConstants;
  *
  */
 public class ConsumerRouteBuilder extends RouteBuilder {
-
-    private static final String ConsumerRouteID = ConsumerRouteBuilder.class.getName() + "-Consumer";
 
     public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
 	
@@ -63,17 +62,25 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        //sending the message to DLQ
 	        .toD(getDLQEndpoint())
 	    	.process().message(m -> {
-	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerRouteID, true, RABBITMQ_ROUTING_KEY);
+	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_ROUTE_ID, true, RABBITMQ_ROUTING_KEY);
 	        })
 	    	//notifiy all consumers to stop
 	    	.to(MngtProducerRouteBuilder.DIRECT_PUBLISH_MESSAGE_MNGT_PRODUCER_ENDPOINT)
     	;
         
+        
+        MetricsRoutePolicy mrp = new MetricsRoutePolicy();
+		mrp.setNamePattern(ConsumerConstants.CONSUMER_ROUTE_ID);
+		mrp.setUseJmx(true);
+		mrp.setJmxDomain(ConsumerConstants.JMX_DOMAIN_NAME);
+		
+		
         //
         //consuming messages
         //
         from(getQueueEndpoint())
-	        .routeId(ConsumerRouteID)
+	        .routeId(ConsumerConstants.CONSUMER_ROUTE_ID)
+	        .routePolicy(mrp)
 		    .to("direct:target");
 	    
         //
