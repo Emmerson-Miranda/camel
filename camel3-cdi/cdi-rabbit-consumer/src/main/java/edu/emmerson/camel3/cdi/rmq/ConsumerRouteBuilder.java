@@ -62,18 +62,15 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        //sending the message to DLQ
 	        .toD(getDLQEndpoint())
 	    	.process().message(m -> {
-	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_ROUTE_ID, true, RABBITMQ_ROUTING_KEY);
+	    		int restartDelayInMilis = 0;
+	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
 	        })
 	    	//notifiy all consumers to stop
-	    	.to(MngtProducerRouteBuilder.DIRECT_PUBLISH_MESSAGE_MNGT_PRODUCER_ENDPOINT)
+	    	.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
     	;
         
         
-        MetricsRoutePolicy mrp = new MetricsRoutePolicy();
-		mrp.setNamePattern(ConsumerConstants.CONSUMER_ROUTE_ID);
-		mrp.setUseJmx(true);
-		mrp.setJmxDomain(ConsumerConstants.JMX_DOMAIN_NAME);
-		
+        MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_ROUTE_ID);
 		
         //
         //consuming messages

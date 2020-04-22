@@ -13,7 +13,8 @@ import org.apache.camel.support.RoutePolicySupport;
 public class MyRoutePolicy  extends RoutePolicySupport  implements CamelContextAware{
 
 	private CamelContext camelContext;
-	
+	private boolean routeActive = Boolean.TRUE;
+
 	public MyRoutePolicy() {
 		System.out.println(this.getClass().getSimpleName() + ":constructor");
 	}
@@ -26,6 +27,15 @@ public class MyRoutePolicy  extends RoutePolicySupport  implements CamelContextA
 	@Override
 	public CamelContext getCamelContext() {
 		return this.camelContext;
+	}
+	
+
+	public boolean isRouteActive() {
+		return routeActive;
+	}
+
+	public void setRouteActive(boolean routeActive) {
+		this.routeActive = routeActive;
 	}
 
 	@Override
@@ -72,7 +82,7 @@ public class MyRoutePolicy  extends RoutePolicySupport  implements CamelContextA
 
 	@Override
 	public void onExchangeBegin(Route route, Exchange exchange) {
-		exchange.setProperty("routeActive", Boolean.FALSE);
+		exchange.setProperty("routeActive", routeActive );
 		System.out.println(this.getClass().getSimpleName() + ":onExchangeBegin:::" + route.getId());
 		System.out.println(exchange.getProperties());
 		super.onExchangeBegin(route, exchange);

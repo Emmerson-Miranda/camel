@@ -18,14 +18,71 @@ docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 -p 5672:567
 Stop consuming messages from queue
 
 ```
-$ curl -d "{\"routeId\": \"edu.emmerson.camel3.cdi.rmq.ConsumerRouteBuilder-Consumer\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"true\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+$ curl -d "{\"routeId\": \"myms.rmq.consumer.myqueue.routeid\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"true\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+```
+
+Stop consuming messages from queue for some period of time
+
+```
+$ curl -d "{\"routeId\": \"myms.rmq.consumer.myqueue.routeid\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"true\", \"restartDelay\": \"15000\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
 ```
 
 Start consuming messages from queue
 
 ```
-$ curl -d "{\"routeId\": \"edu.emmerson.camel3.cdi.rmq.ConsumerRouteBuilder-Consumer\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"false\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+$ curl -d "{\"routeId\": \"myms.rmq.consumer.myqueue.routeid\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"false\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
 ```
+
+Stop camel HTTP endpoint consumer indefinitely
+
+```
+curl -d "{\"routeId\": \"mngt-endpoint-stats\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"true\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+
+curl -i http://0.0.0.0:9090/mngt/stats
+```
+
+Start camel HTTP endpoint consumer indefinitely
+
+```
+curl -d "{\"routeId\": \"mngt-endpoint-stats\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"false\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+
+curl -i http://0.0.0.0:9090/mngt/stats
+```
+
+Stop camel HTTP endpoint consumer for some period of time
+
+```
+curl -d "{\"routeId\": \"mngt-endpoint-stats\", \"routingKey\": \"rabbit.consumer\", \"suspend\": \"true\", \"restartDelay\": \"15000\"}" -H "Content-Type: application/json"  -X POST http://0.0.0.0:9090/mngt/publish
+
+curl -i http://0.0.0.0:9090/mngt/stats
+```
+
+Describe camel routes
+
+```
+$ curl http://0.0.0.0:9090/mngt/describe | jq .
+
+{
+  "date": "2020-04-22T23:47:37.386Z",
+  "routes": {
+    "mngt.controlbus.describe.direct": "DirectEndpoint",
+    "mngt.controlbus.consumer.amqp": "RabbitMQEndpoint",
+    "mngt.controlbus.consumer.direct": "DirectEndpoint",
+    "myms.rest.get.status.routeid": "DirectEndpoint",
+    "route1": "DirectEndpoint",
+    "myms.rmq.consumer.myqueue.routeid": "RabbitMQEndpoint",
+    "ConsumerRouteBuilder-target-routeId": "DirectEndpoint",
+    "api-doc-endpoint": "RestApiEndpoint",
+    "mngt.controlbus.producer.post": "RestEndpoint",
+    "mngt.controlbus.describe.get": "RestEndpoint",
+    "mngt.controlbus.shutdown.get": "RestEndpoint",
+    "mngt-endpoint-stats": "RestEndpoint",
+    "mngt.controlbus.shutdown.direct": "DirectEndpoint"
+  }
+}
+```
+
+
 
 Gracefull shudown
 
@@ -46,7 +103,11 @@ External info
 * https://github.com/prometheus/jmx_exporter/blob/master/jmx_prometheus_javaagent/src/main/java/io/prometheus/jmx/JavaAgent.java
 * http://www.opensourcerers.org/2017/11/29/monitoring-camel-prometheus-red-hat-openshift/
 
-https://issues.apache.org/jira/browse/CAMEL-14930
+Help from Apache Camel Members (thank you guys)
+
+* https://issues.apache.org/jira/browse/CAMEL-14930
+* https://issues.apache.org/jira/browse/CAMEL-14944
+
 
 Prometheus agent config.yaml
 
