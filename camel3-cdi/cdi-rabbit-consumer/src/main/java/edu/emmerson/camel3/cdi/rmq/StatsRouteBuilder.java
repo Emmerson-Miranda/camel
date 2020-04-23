@@ -1,9 +1,12 @@
 package edu.emmerson.camel3.cdi.rmq;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.rest.RestApiEndpoint;
 import org.apache.camel.component.rest.RestEndpoint;
@@ -27,13 +30,24 @@ public class StatsRouteBuilder extends RouteBuilder {
 		//.throttle(2).timePeriodMillis(10000).rejectExecution(true)
 		
 		from(DIRECT_STATS)
-			.routeId(ConsumerConstants.STATUS_ROUTE_ID)
-			.log("running route status camel: ${exchangeProperty.routeActive} : " + ConsumerConstants.STATUS_ROUTE_ID)
+			.routeId(ConsumerConstants.STATS_DIRECT_ROUTE_ID)
+			.log("running route status camel: ${exchangeProperty.routeActive} : " + ConsumerConstants.STATS_DIRECT_ROUTE_ID)
 
 			.process().message(m -> {
 				final CamelContext ctx = m.getExchange().getContext();
 				final List<String> routes = new ArrayList<String>();
-				ctx.getRoutes().forEach(r -> {
+				
+				Comparator<Route> compareById = new Comparator<Route>() {
+				    @Override
+				    public int compare(Route o1, Route o2) {
+				        return o1.getId().compareTo(o2.getId());
+				    }
+				};
+				
+				List<Route> unordered = ctx.getRoutes();
+				Collections.sort(unordered, compareById);
+				
+				unordered.forEach(r -> {
 					if ((r.getEndpoint() instanceof RestEndpoint)
 							|| (r.getEndpoint() instanceof RestApiEndpoint)) {
 						routes.add(r.getId());

@@ -65,19 +65,19 @@ $ curl http://0.0.0.0:9090/mngt/describe | jq .
 {
   "date": "2020-04-22T23:47:37.386Z",
   "routes": {
-    "mngt.controlbus.describe.direct": "DirectEndpoint",
     "mngt.controlbus.consumer.amqp": "RabbitMQEndpoint",
     "mngt.controlbus.consumer.direct": "DirectEndpoint",
-    "myms.rest.get.status.routeid": "DirectEndpoint",
-    "route1": "DirectEndpoint",
-    "myms.rmq.consumer.myqueue.routeid": "RabbitMQEndpoint",
-    "ConsumerRouteBuilder-target-routeId": "DirectEndpoint",
-    "api-doc-endpoint": "RestApiEndpoint",
-    "mngt.controlbus.producer.post": "RestEndpoint",
+    "mngt.controlbus.describe.direct": "DirectEndpoint",
     "mngt.controlbus.describe.get": "RestEndpoint",
+    "mngt.controlbus.producer.direct": "DirectEndpoint",
+    "mngt.controlbus.producer.post": "RestEndpoint",
+    "mngt.controlbus.shutdown.direct": "DirectEndpoint",
     "mngt.controlbus.shutdown.get": "RestEndpoint",
-    "mngt-endpoint-stats": "RestEndpoint",
-    "mngt.controlbus.shutdown.direct": "DirectEndpoint"
+    "mngt.controlbus.swagger.get": "RestApiEndpoint",
+    "ms.mymscode.myqueuename.amqp.consumer": "RabbitMQEndpoint",
+    "ms.mymscode.myqueuename.camel.direct": "DirectEndpoint",
+    "ms.mymscode.stats.camel.direct": "DirectEndpoint",
+    "ms.mymscode.stats.http.get": "RestEndpoint"
   }
 }
 ```

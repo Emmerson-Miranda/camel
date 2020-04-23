@@ -20,4 +20,6 @@ public interface MngtConstants {
 	String MNGT_SHUTDOWN_DIRECT_ROUTE_ID = "mngt.controlbus.shutdown.direct";
 	String MNGT_SHUTDOWN_REST_ROUTE_ID   = "mngt.controlbus.shutdown.get";
 	
+	String MNGT_SWAGGER_REST_ROUTE_ID   = "mngt.controlbus.swagger.get";
+	
 }

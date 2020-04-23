@@ -21,7 +21,7 @@ public class MngtRestRouteBuilder extends RouteBuilder {
             .bindingMode(RestBindingMode.json)
             .contextPath("/").host("0.0.0.0").port(9090)
             .apiContextPath("/api-doc")
-            	.apiContextRouteId("api-doc-endpoint")
+            	.apiContextRouteId(MngtConstants.MNGT_SWAGGER_REST_ROUTE_ID)
                 .apiProperty("api.title", "Producer API").apiProperty("api.version", "1.0.0")
                 .apiProperty("cors", "true");
 		
@@ -50,11 +50,11 @@ public class MngtRestRouteBuilder extends RouteBuilder {
 		        .to(MngtConstants.MNGT_SHUTDOWN_DIRECT_ENDPOINT)
         ;  
  
-       MetricsRoutePolicy mrpStats = MetricsFactory.createMetricsRoutePolicy("mngt-endpoint-stats");	
+       MetricsRoutePolicy mrpStats = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.STATS_DIRECT_REST_ROUTE_ID);	
        rest("/mngt").description("RabbitMQ Camel Management service")
 	        .consumes("application/json").produces("application/json") 
 	        .get("/stats")
-		        .description("Stats Apache Camel").route().routeId("mngt-endpoint-stats").routePolicy(mrpStats)
+		        .description("Stats Apache Camel").route().routeId(ConsumerConstants.STATS_DIRECT_REST_ROUTE_ID).routePolicy(mrpStats)
 		        .to(StatsRouteBuilder.DIRECT_STATS)
        ;
        

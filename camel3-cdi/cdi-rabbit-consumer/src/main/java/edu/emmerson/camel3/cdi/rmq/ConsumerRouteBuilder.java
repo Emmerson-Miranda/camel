@@ -57,26 +57,27 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        .maximumRedeliveries(2)
 	        .handled(true)
 	        .asyncDelayedRedelivery().redeliveryDelay(1000)
+	        .routeId("abcdef")
 	        .log("\"Error reported: ${exception.message} - cannot process this message.\" - retry ${headers.rabbitmq.DELIVERY_TAG}")
 	        .setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
 	        //sending the message to DLQ
 	        .toD(getDLQEndpoint())
 	    	.process().message(m -> {
 	    		int restartDelayInMilis = 0;
-	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
+	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
 	        })
 	    	//notifiy all consumers to stop
 	    	.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
     	;
         
         
-        MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_ROUTE_ID);
+        MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID);
 		
         //
         //consuming messages
         //
         from(getQueueEndpoint())
-	        .routeId(ConsumerConstants.CONSUMER_ROUTE_ID)
+	        .routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
 	        .routePolicy(mrp)
 		    .to("direct:target");
 	    
@@ -84,7 +85,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
         //processing message
         //
         from("direct:target")
-	        .routeId("ConsumerRouteBuilder-target-routeId")
+	        .routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
 	        .log(">>> ...........................................................")
 	        .log("Message to be sent: ${body}")
 	        .log("Message to be sent: ${headers}")

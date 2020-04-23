@@ -59,7 +59,7 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
 	        .log("Camel management controlbus action to process: ${body}")
 	        .process().message(m -> {
 	        	
-	        	@SuppressWarnings("unchecked")
+				@SuppressWarnings("unchecked")
 				final LinkedHashMap<String, String> body = (LinkedHashMap<String, String>) m.getBody();
 				
 				final String routeId = body.get("routeId");

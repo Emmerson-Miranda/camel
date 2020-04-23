@@ -43,7 +43,10 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
+        String id = MngtConstants.MNGT_PRODUCER_DIRECT_ROUTE_ID;
+        
+		from(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
+        .routeId(id)
         .process().message(m -> {
         	m.setHeader("custom.messageId", UUID.randomUUID().toString());
 			m.setHeader("custom.currentTimeMillis", System.currentTimeMillis());

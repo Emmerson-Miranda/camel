@@ -1,9 +1,13 @@
 package edu.emmerson.camel3.cdi.rmq;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 
 public class MngtDescribeRouteBuilder extends RouteBuilder {
@@ -23,7 +27,18 @@ public class MngtDescribeRouteBuilder extends RouteBuilder {
 			body.put("routes", routes);
 			
 			final CamelContext ctx = m.getExchange().getContext();
-			ctx.getRoutes().forEach(r -> {
+			
+			Comparator<Route> compareById = new Comparator<Route>() {
+			    @Override
+			    public int compare(Route o1, Route o2) {
+			        return o1.getId().compareTo(o2.getId());
+			    }
+			};
+			
+			List<Route> ordered = ctx.getRoutes();
+			Collections.sort(ordered, compareById);
+			
+			ordered.forEach(r -> {
 				routes.put(r.getId(), r.getEndpoint().getClass().getSimpleName());
 			});
 			
