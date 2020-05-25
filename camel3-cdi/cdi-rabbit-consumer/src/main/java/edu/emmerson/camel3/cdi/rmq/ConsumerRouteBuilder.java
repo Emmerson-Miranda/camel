@@ -1,8 +1,11 @@
 package edu.emmerson.camel3.cdi.rmq;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
+import org.apache.camel.http.base.HttpOperationFailedException;
 
 /**
  * 
@@ -57,6 +60,22 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        .maximumRedeliveries(2)
 	        .handled(true)
 	        .asyncDelayedRedelivery().redeliveryDelay(1000)
+	        .onRedelivery(new Processor() {
+
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					System.out.println("redelivery");
+					//System.out.println(exchange.getProperties().get("CamelExceptionCaught"));
+					System.out.println(exchange.getProperties().get("CamelToEndpoint"));
+					
+					HttpOperationFailedException ex  = (HttpOperationFailedException) exchange.getProperties().get("CamelExceptionCaught");
+					System.out.println(ex.getStatusCode());
+					System.out.println(ex.getStatusText());
+					System.out.println(ex.getMessage());
+				}
+	        	
+	        }
+	        )
 	        .routeId("abcdef")
 	        .log("\"Error reported: ${exception.message} - cannot process this message.\" - retry ${headers.rabbitmq.DELIVERY_TAG}")
 	        .setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
@@ -100,6 +119,15 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        .end()
 	
 	        .log("<<< ...........................................................")
+	        .process(new Processor() {
+
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					System.out.println("Just before send the request to backend.");
+				}
+	        	
+	        })
+	        .to("undertow:http://localhost:9999/myService?httpMethodRestrict=POST");
         ;
     }
 
