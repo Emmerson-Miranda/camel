@@ -4,7 +4,7 @@ package edu.emmerson.camel3.cdi.rmq;
 import javax.inject.Named;
 
 /**
- * docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 -p 5672:5672  rabbitmq:3-management
+ * docker run -d --hostname rabbitmqserver --name some-rabbit -p 15672:15672 -p 5672:5672  rabbitmq:3-management
  * 
  * @author emmersonmiranda
  *
@@ -14,7 +14,7 @@ public class ConsumerConnectionFactoryService extends com.rabbitmq.client.Connec
 
 	public ConsumerConnectionFactoryService() {
 		super();
-		super.setHost("localhost");
+		super.setHost("rabbitmqserver");
 		super.setPort(5672);
 		super.setUsername("guest");
 		super.setPassword("guest");

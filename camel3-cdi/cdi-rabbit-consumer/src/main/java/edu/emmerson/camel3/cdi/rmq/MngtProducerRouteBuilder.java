@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.camel.Message;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 
 
 public class MngtProducerRouteBuilder extends RouteBuilder {
@@ -30,13 +31,18 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
         ;
         return sbPub.toString();
 	}
-	
-	public static void buildMngtMessage(Message dm , String consumerRouteID, boolean suspend, String rabbitRoutingKey, int restartDelayInMilis) {
+
+	public static LinkedHashMap<String, String> buildMngtMessage(String consumerRouteID, boolean suspend, String rabbitRoutingKey, int restartDelayInMilis) {
 		LinkedHashMap<String, String> body = new LinkedHashMap<String, String>();
 		body.put("routeId", consumerRouteID);
 		body.put("suspend", suspend ? "true" : "false");
 		body.put("routingKey", rabbitRoutingKey);
 		body.put("restartDelay", "" + restartDelayInMilis);
+		return body;
+	}
+	
+	public static void buildMngtMessage(Message dm , String consumerRouteID, boolean suspend, String rabbitRoutingKey, int restartDelayInMilis) {
+		LinkedHashMap<String, String> body = buildMngtMessage(consumerRouteID, suspend, rabbitRoutingKey, restartDelayInMilis);
 		dm.setBody(body);
 	}
 
@@ -59,6 +65,7 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
 			m.setHeader(org.apache.camel.component.rabbitmq.RabbitMQConstants.ROUTING_KEY, body.get("routingKey"));
         })
         .log("Camel management controlbus sending event to topic: ${body}")
+        .marshal().json(JsonLibrary.Jackson)
         .toD(getQueueEndpoint())
         .log("Camel management controlbus sending event finished!");
     }

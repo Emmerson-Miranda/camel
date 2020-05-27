@@ -8,7 +8,7 @@
 	<groupId>edu.emmerson.camel3.cdi.rmq</groupId>
 	<artifactId>cdi-rabbit-producer</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<name>Camel route using CDI in a standalone Java Container</name>
 
@@ -23,7 +23,7 @@
 			<dependency>
 				<groupId>org.apache.camel</groupId>
 				<artifactId>camel-parent</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -195,7 +195,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>edu.emmerson.camel3.cdi.user.UserMainApp</mainClass>
+							<mainClass>edu.emmerson.camel3.cdi.rmq.ProducerMainApp</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 					</archive>
@@ -247,7 +247,6 @@
 						<resource>
 							<targetPath>dependency-jars</targetPath>
 							<directory>${project.build.directory}/dependency-jars</directory>
-							<include>*.jar</include>
 						</resource>
 					</resources>
 					<imageTags>

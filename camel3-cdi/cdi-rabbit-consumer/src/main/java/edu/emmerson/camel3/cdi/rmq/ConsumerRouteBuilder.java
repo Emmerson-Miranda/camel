@@ -1,5 +1,7 @@
 package edu.emmerson.camel3.cdi.rmq;
 
+import java.util.LinkedHashMap;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -52,6 +54,8 @@ public class ConsumerRouteBuilder extends RouteBuilder {
     
 	@Override
     public void configure() throws Exception {
+		
+		boolean disableSuspension = "true".equals(System.getenv("DISABLE_SUSPENSION"));
 
         //
         //error handling
@@ -81,12 +85,18 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        .setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
 	        //sending the message to DLQ
 	        .toD(getDLQEndpoint())
-	    	.process().message(m -> {
-	    		int restartDelayInMilis = 0;
-	    		MngtProducerRouteBuilder.buildMngtMessage(m, ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
-	        })
-	    	//notifiy all consumers to stop
-	    	.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
+	        .choice()
+	        	.when(constant(disableSuspension).isEqualTo(false))
+	        		.log("Notifing rabbitmq consumer to stop")
+			    	.process().message(m -> {
+			    		int restartDelayInMilis = 30000;
+			    		LinkedHashMap<String, String> body = MngtProducerRouteBuilder.buildMngtMessage(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
+			    		m.setBody(body);
+			        })
+			    	.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
+			    .otherwise()
+			    	.log("Stop consumers disabled by DISABLE_SUSPENSION environment variable.")
+			.end()
     	;
         
         

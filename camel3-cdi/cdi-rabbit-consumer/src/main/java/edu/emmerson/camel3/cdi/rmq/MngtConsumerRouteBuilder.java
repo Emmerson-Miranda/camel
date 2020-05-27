@@ -8,6 +8,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rest.RestApiEndpoint;
 import org.apache.camel.component.rest.RestEndpoint;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -55,6 +56,7 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
         //	
         from(MngtConstants.MNGT_CONSUMER_DIRECT_ENDPOINT)
 	        .routeId(MngtConstants.MNGT_CONSUMER_DIRECT_ROUTE_ID)
+	        .unmarshal().json(JsonLibrary.Jackson)
 	        .log(">>> ------------------------------------------------------------------")
 	        .log("Camel management controlbus action to process: ${body}")
 	        .process().message(m -> {
