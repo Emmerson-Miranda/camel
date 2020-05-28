@@ -14,7 +14,7 @@ public class ConsumerConnectionFactoryService extends com.rabbitmq.client.Connec
 
 	public ConsumerConnectionFactoryService() {
 		super();
-		super.setHost("rabbitmqserver");
+		super.setHost("rabbitmq");
 		super.setPort(5672);
 		super.setUsername("guest");
 		super.setPassword("guest");

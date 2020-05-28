@@ -69,6 +69,8 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					System.out.println("redelivery");
+					System.out.println("Retry counter " + exchange.getIn().getHeader(Exchange.REDELIVERY_COUNTER));
+					System.out.println("Retry Max counter " + exchange.getIn().getHeader(Exchange.REDELIVERY_MAX_COUNTER));
 					//System.out.println(exchange.getProperties().get("CamelExceptionCaught"));
 					System.out.println(exchange.getProperties().get("CamelToEndpoint"));
 					
@@ -137,7 +139,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				}
 	        	
 	        })
-	        .to("undertow:http://localhost:9999/myService?httpMethodRestrict=POST");
+	        .to("undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut");
         ;
     }
 

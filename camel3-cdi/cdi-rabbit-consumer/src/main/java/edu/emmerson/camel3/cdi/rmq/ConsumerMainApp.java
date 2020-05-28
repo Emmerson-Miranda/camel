@@ -10,8 +10,8 @@ public class ConsumerMainApp {
     public static void main(String... args) throws Exception {
     	
     	Manifest mf = new Manifest(ConsumerMainApp.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
-        System.out.println(mf.getAttributes("Main-Class"));
-        System.out.println(mf.getAttributes("Class-Path"));
+        System.out.println(mf.getMainAttributes().getValue("Main-Class"));
+        System.out.println(mf.getMainAttributes().getValue("Class-Path"));
         
     	System.out.println("------------------- Starting with shared main library -------------------");
     	

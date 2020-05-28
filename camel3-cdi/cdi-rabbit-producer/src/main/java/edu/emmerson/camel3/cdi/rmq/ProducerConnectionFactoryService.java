@@ -14,7 +14,7 @@ public class ProducerConnectionFactoryService extends com.rabbitmq.client.Connec
 
 	public ProducerConnectionFactoryService() {
 		super();
-		super.setHost("rabbitmqserver");
+		super.setHost("rabbitmq");
 		super.setPort(5672);
 		super.setUsername("guest");
 		super.setPassword("guest");

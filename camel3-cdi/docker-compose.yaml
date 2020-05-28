@@ -1,26 +1,31 @@
 version: '3.7'
 services:
-  rabbitmqserver:
+  rabbitmq:
     image: rabbitmq:3-management
     networks:
-      - envoymesh
+      - pocnetwork
     ports:
       - "15672:15672" 
       - "5672:5672" 
-  producer:
-    image: emmerson/cdi-rabbit-producer:1.0.1-SNAPSHOT
+  upstream:
+    image: emmerson/upstream:mock
     networks:
-      - envoymesh
+      - pocnetwork
+    ports:
+      - "10003:10003"
+  producer:
+    image: emmerson/cdi-rabbit-producer:1.0.3-SNAPSHOT
+    networks:
+      - pocnetwork
     ports:
       - "8080:8080"
   consumer:
-    image: emmerson/cdi-rabbit-consumer:1.0.2-SNAPSHOT
+    image: emmerson/cdi-rabbit-consumer:1.0.3-SNAPSHOT
     environment: 
       - DISABLE_SUSPENSION=true
     networks:
-      - envoymesh
+      - pocnetwork
     ports:
-      - "9090:9090"
-
+      - "9090:9090" 
 networks:
-  envoymesh: {}
+  pocnetwork: {}
