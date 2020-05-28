@@ -8,13 +8,13 @@ services:
       - "15672:15672" 
       - "5672:5672" 
   producer:
-    image: cdi-rabbit-producer:latest
+    image: emmerson/cdi-rabbit-producer:1.0.1-SNAPSHOT
     networks:
       - envoymesh
     ports:
       - "8080:8080"
   consumer:
-    image: cdi-rabbit-consumer:latest
+    image: emmerson/cdi-rabbit-consumer:1.0.2-SNAPSHOT
     environment: 
       - DISABLE_SUSPENSION=true
     networks:
