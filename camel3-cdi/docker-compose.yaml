@@ -14,18 +14,22 @@ services:
     ports:
       - "10003:10003"
   producer:
-    image: emmerson/cdi-rabbit-producer:1.0.3-SNAPSHOT
+    image: emmerson/cdi-rabbit-producer:1.0.4
     networks:
       - pocnetwork
     ports:
       - "8080:8080"
+      - "8888:8888"
+      - "15000:15000"
   consumer:
-    image: emmerson/cdi-rabbit-consumer:1.0.3-SNAPSHOT
+    image: emmerson/cdi-rabbit-consumer:1.0.4
     environment: 
       - DISABLE_SUSPENSION=true
     networks:
       - pocnetwork
     ports:
-      - "9090:9090" 
+      - "9090:9090"
+      - "9999:8888"
+      - "16000:16000" 
 networks:
   pocnetwork: {}
