@@ -19,15 +19,23 @@ docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 -p 5672:567
 Run following commands drop a message in RabbitMQ, the headers will specify how the consumer is going to behave:
 
 ```
-$ curl -d "{\"ok\": \"value without error, upstream return 404\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok"  -X POST http://0.0.0.0:8080/rmq/publish
 
-$ curl -d "{\"ok\": \"value with error, camel raise an exception internally\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ko" -H "X-US-SCENARIO: 200"  -X POST http://0.0.0.0:8080/rmq/publish
+Run following commands drop a message in RabbitMQ, the headers will specify how the consumer is going to behave:
 
-$ curl -d "{\"ok\": \"value without error, upstream return 200\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200"  -X POST http://0.0.0.0:8080/rmq/publish
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:8080/rmq/publish
 
-$ curl -d "{\"ok\": \"value without error, raise a 400 error in the upstream\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 400"  -X POST http://0.0.0.0:8080/rmq/publish
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 400" -X POST http://0.0.0.0:8080/rmq/publish
 
-$ curl -d "{\"ok\": \"value without error, raise a 500 error in the upstream\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 500"  -X POST http://0.0.0.0:8080/rmq/publish
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 500" -X POST http://0.0.0.0:8080/rmq/publish
+
+If X-US-SCENARIO header is not provided, the upstream will return 400 and Camel is going to handle the error.
+
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -X POST http://0.0.0.0:8080/rmq/publish
+
+If "test-scenario: ko", camel simulate an internal exception error.
+
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ko" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:8080/rmq/publish
+
 
 ```
 
