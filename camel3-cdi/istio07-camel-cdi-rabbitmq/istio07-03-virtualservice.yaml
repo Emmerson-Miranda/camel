@@ -1,0 +1,65 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: poc07-virtualservice
+spec:
+  hosts:
+  - "poc07.istio.com"
+  gateways:
+  - poc07-gateway
+  http:
+  - name: "producer_prometheus"
+    match:
+    - uri:
+        prefix: /producer/prometheus
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        port:
+          number: 8888
+        host: producer-service
+  - name: "producer_service"
+    match:
+    - uri:
+        prefix: /producer/service
+    rewrite:
+      uri: /rmq/publish
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: producer-service
+  - name: "consumer_prometheus"
+    match:
+    - uri:
+        prefix: /consumer/prometheus
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        port:
+          number: 9999
+        host: consumer-service
+  - name: "upstream_service"
+    match:
+    - uri:
+        prefix: /upstream/service
+    rewrite:
+      uri: /microservice/myservice
+    route:
+    - destination:
+        port:
+          number: 10003
+        host: upstream
+  - name: "rmq_console"
+    match:
+    - uri:
+        prefix: /rmq/console
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        port:
+          number: 15672
+        host: rabbitmq
