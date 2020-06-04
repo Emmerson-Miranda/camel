@@ -41,10 +41,5 @@ curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/prome
 #then curl http://localhost:7000
 
 
-kubectl get pod -l app=istio-ingressgateway  -n istio-system -o yaml
-
-
-
-
 #summary of clusters, listeners or routes
-istioctl proxy-config cluster -n istio-system $(kubectl get pod -l app=istio-ingressgateway  -n istio-system -o jsonpath={.items..metadata.name})
+#istioctl proxy-config cluster -n istio-system $(kubectl get pod -l app=istio-ingressgateway  -n istio-system -o jsonpath={.items..metadata.name})
