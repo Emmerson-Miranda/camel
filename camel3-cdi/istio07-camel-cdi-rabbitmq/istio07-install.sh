@@ -2,13 +2,11 @@
 
 echo "Default namespace will not inject automatically the istio sidecar"
 kubectl get namespace -L istio-injection
+kubectl label namespace default istio-injection=enabled
+kubectl get namespace -L istio-injection
 
 echo "--- Deploying applications"
-kubectl apply -f <(istioctl kube-inject -f istio07-01-rabbitmq.yaml)
-kubectl apply -f <(istioctl kube-inject -f istio07-01-mock-upstream.yaml)
-kubectl apply -f <(istioctl kube-inject -f istio07-01-cdi-consumer.yaml)
-kubectl apply -f <(istioctl kube-inject -f istio07-01-cdi-producer.yaml)
-
+kubectl apply -f istio07-01-cdi-deployments.yaml
 
 echo "--- Creating istio gateway"
 kubectl apply -f istio07-02-gateway.yaml
@@ -37,9 +35,9 @@ curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/prome
 #curl localhost:15000/logging?level=debug -X POST
 
 #access to localhost to the cluster
+#prometheus
 #kubectl port-forward $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) 7000:8888
 #then curl http://localhost:7000
-
 
 #summary of clusters, listeners or routes
 #istioctl proxy-config cluster -n istio-system $(kubectl get pod -l app=istio-ingressgateway  -n istio-system -o jsonpath={.items..metadata.name})

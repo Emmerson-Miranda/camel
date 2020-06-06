@@ -1,0 +1,198 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq 
+spec:
+  ports:
+  - name: management
+    port: 15672
+    targetPort: 15672
+  - name: interface
+    port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbitmq
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: producer-service
+  labels:
+    app: producer-service
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  - name: prometheus
+    port: 8888
+    targetPort: 8888
+  - name: jmx
+    port: 16000
+    targetPort: 16000
+  selector:
+    app: producer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumer-service
+  labels:
+    app: consumer-service 
+spec:
+  ports:
+  - name: http
+    port: 9090
+    targetPort: 9090
+  - name: prometheus
+    port: 9999
+    targetPort: 9999
+  - name: jmx
+    port: 16000
+    targetPort: 16000
+  selector:
+    app: consumer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: upstream
+  labels:
+    app: upstream
+spec:
+  ports:
+  - name: http
+    port: 10003
+    targetPort: 10003
+  selector:
+    app: upstream
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+    version: v1
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        version: v1
+    spec:
+      containers:
+      - image: rabbitmq:3-management
+        imagePullPolicy: IfNotPresent
+        name: rabbitmq
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: upstream
+    version: v1
+  name: upstream
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upstream
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: upstream
+        version: v1
+    spec:
+      containers:
+      - image: emmerson/upstream:mock
+        imagePullPolicy: IfNotPresent
+        name: upstream
+        ports:
+        - containerPort: 10003
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: producer
+    version: v1
+  name: producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: producer
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: producer
+        version: v1
+    spec:
+      containers:
+      - image: emmerson/cdi-rabbit-producer:1.0.5
+        imagePullPolicy: IfNotPresent
+        name: cdi-rabbit-producer
+        ports:
+        - containerPort: 8080
+        - containerPort: 8888
+        - containerPort: 16000
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: consumer
+    version: v1
+  name: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: consumer
+        version: v1
+    spec:
+      containers:
+      - image: emmerson/cdi-rabbit-consumer:1.0.4
+        imagePullPolicy: IfNotPresent
+        name: cdi-rabbit-consumer
+        ports:
+        - containerPort: 9090
+        - containerPort: 9999
+        - containerPort: 16000
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
