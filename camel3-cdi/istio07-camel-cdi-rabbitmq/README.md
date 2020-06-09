@@ -73,8 +73,8 @@ kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..m
 kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
 ```
 
-Changing istio-proxy logging level 
-(levels: trace debug info warning error critical off)
+Changing istio-proxy logging level (levels: trace debug info warning error critical off)
+
 https://www.envoyproxy.io/docs/envoy/latest/operations/admin
 ```
 kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
