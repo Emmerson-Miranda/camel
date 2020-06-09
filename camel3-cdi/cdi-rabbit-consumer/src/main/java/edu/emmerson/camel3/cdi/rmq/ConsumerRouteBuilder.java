@@ -17,33 +17,29 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ConsumerRouteBuilder extends RouteBuilder {
 
-    public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
-	
-	@Override
-    public void configure() throws Exception {
-		
-		boolean disableSuspension = isDisableSuspensionEnabled();
-		
-		long lpts = getProcessTimeSimulationMs();
-		
-        //
-        //error handling
-        //
-        onException(Throwable.class)
-	        .maximumRedeliveries(2)
-	        .handled(true)
-	        .log("onException:: ${header.X-Correlation-ID} :: ${exception.message} :: ${exception}")
-	        .asyncDelayedRedelivery().redeliveryDelay(1000)
-	        .onExceptionOccurred(new Processor() {
+	public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
 
+	@Override
+	public void configure() throws Exception {
+
+		boolean disableSuspension = isDisableSuspensionEnabled();
+
+		long lpts = getProcessTimeSimulationMs();
+
+		//
+		// error handling
+		//
+		onException(Throwable.class).maximumRedeliveries(2).handled(true)
+			.log("onException:: ${header.X-Correlation-ID} :: ${exception.message} :: ${exception}")
+			.asyncDelayedRedelivery()
+			.redeliveryDelay(1000)
+			.onExceptionOccurred(new Processor() {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					printExchange("onExceptionOccurred", exchange);
 				}
-	        	
-	        })
-	        .onRedelivery(new Processor() {
-
+			})
+			.onRedelivery(new Processor() {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					/*
@@ -60,161 +56,141 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 					*/
 					printExchange("onRedelivery", exchange);
 				}
-	        	
-	        }
-	        )
-	        //.log("\"Error reported: ${exception.message} - cannot process this message.\" - retry ${headers.rabbitmq.DELIVERY_TAG}")
-	        .setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
-	        //sending the message to DLQ
-	        .toD(getDLQEndpoint())
-	        .choice()
-	        	.when(constant(disableSuspension).isEqualTo(false))
-	        		.log("Stop consumers enabled - stopping them")
-			    	.process().message(m -> {
-			    		int restartDelayInMilis = 30000;
-			    		LinkedHashMap<String, String> body = MngtProducerRouteBuilder.buildMngtMessage(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID, true, RABBITMQ_ROUTING_KEY, restartDelayInMilis);
-			    		m.setBody(body);
-			        })
-			    	.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
-			    .otherwise()
-			    	.log("Stop consumers disabled by DISABLE_SUSPENSION environment variable.")
+	
+			})
+			// .log("\"Error reported: ${exception.message} - cannot process this message.\"
+			// - retry ${headers.rabbitmq.DELIVERY_TAG}")
+			.setHeader(RabbitMQConstants.ROUTING_KEY, constant("dlq"))
+			// sending the message to DLQ
+			.toD(getDLQEndpoint())
+			.choice()
+				.when(constant(disableSuspension).isEqualTo(false))
+					.log("Stop consumers enabled - stopping them")
+					.process().message(m -> {
+						int restartDelayInMilis = 30000;
+						LinkedHashMap<String, String> body = MngtProducerRouteBuilder.buildMngtMessage(
+								ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID, true, RABBITMQ_ROUTING_KEY,
+								restartDelayInMilis);
+						m.setBody(body);
+					})
+					.to(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT).otherwise()
+					.log("Stop consumers disabled by DISABLE_SUSPENSION environment variable.")
+			.end();
+
+		MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID);
+
+		//
+		// consuming messages
+		//
+		from(getQueueEndpoint())
+			.routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
+			.routePolicy(mrp)
+			.to("direct:target");
+
+		//
+		// processing message
+		//
+		from("direct:target")
+			.routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
+			.log("Message to send: ${header.X-Correlation-ID}")
+			.choice()
+				.when(header("test-scenario").isEqualTo("ko")).process((m) -> {
+					throw new Exception("Some error happen!");
+				})
 			.end()
-    	;
-        
-        
-        MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID);
-		
-        //
-        //consuming messages
-        //
-        from(getQueueEndpoint())
-	        .routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
-	        .routePolicy(mrp)
-		    .to("direct:target");
-	    
-        //
-        //processing message
-        //
-        from("direct:target")
-	        .routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
-	        .log("Message to send: ${header.X-Correlation-ID}")
-	        .choice()
-	        	.when(header("test-scenario").isEqualTo("ko"))
-		        	.process((m) -> {
-		        		throw new Exception("Some error happen!");
-		        	})
-	        .end()
-	        .process(new Processor() {
+			.process(new Processor() {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					Thread.sleep(lpts);
 				}
-	        	
-	        })
-	        .to(getUpstreamEndpoint())
-	        .log("Message sended: ${header.X-Correlation-ID}")
-	        ;
-        ;
-    }
-	
+			})
+			.to(getUpstreamEndpoint())
+			.log("Message sended: ${header.X-Correlation-ID}");
+		;
+	}
+
 	private void printExchange(String prefix, Exchange exchange) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("\n........................................................\n");
-		exchange.getProperties().forEach((k,v) -> {
+		exchange.getProperties().forEach((k, v) -> {
 			sb.append(prefix).append(":property:" + k + ":" + v).append("\n");
 		});
-		exchange.getIn().getHeaders().forEach((k,v) -> {
+		exchange.getIn().getHeaders().forEach((k, v) -> {
 			sb.append(prefix).append(":header:" + k + ":" + v).append("\n");
 		});
 		sb.append("........................................................\n");
-		
+
 		System.out.println(sb.toString());
 	}
 
+	private String getQueueEndpoint() {
+		StringBuilder sbConsumer = new StringBuilder();
 
-    private String getQueueEndpoint() {
-    	StringBuilder sbConsumer = new StringBuilder();
-    	
-    	String envvar = System.getenv("RMQ_CONSUMER_QUEUE_CS");
-    	if(StringUtils.isEmpty(envvar)) {
-	        sbConsumer.append("rabbitmq:myexchange?")
-	        .append("connectionFactory=#consumerConnectionFactoryService")
-	        .append("&queue=myqueue")
-	        .append("&routingKey=main")
-	        .append("&durable=true")
-	        .append("&autoDelete=false")
-	        .append("&automaticRecoveryEnabled=true")
-	        .append("&exclusive=false")
-	        .append("&autoAck=false")
-	        .append("&concurrentConsumers=2")
-	        .append("&prefetchCount=2")
-	        .append("&prefetchEnabled=true")
-	        .append("&transferException=true")
-	        ;
-    	}else {
-    		sbConsumer.append(envvar);
-    	}
-    	
-    	System.out.println("CONFIGURATION -> RMQ_CONSUMER_QUEUE_CS=" + sbConsumer.toString());
-        return sbConsumer.toString();
-    }
-    
-    private String getDLQEndpoint() {
-    	StringBuilder sbConsumer = new StringBuilder();
-    	
-    	String envvar = System.getenv("RMQ_CONSUMER_DLQ_CS");
-    	if(StringUtils.isEmpty(envvar)) {
-	        sbConsumer.append("rabbitmq:myexchange?")
-	        .append("connectionFactory=#consumerConnectionFactoryService")
-	        .append("&queue=myqueueDLQ")
-	        .append("&durable=true")
-	        .append("&autoDelete=false")
-	        .append("&automaticRecoveryEnabled=true")
-	        .append("&exchangePattern=InOnly")
-	        .append("&routingKey=dlq")
-	        .append("&exclusive=false")
-	        .append("&autoAck=false")
-	        .append("&transferException=true")
-	        ;
-    	}else {
-    		sbConsumer.append(envvar);
-    	}
-    	
-    	System.out.println("CONFIGURATION -> RMQ_CONSUMER_DLQ_CS=" + sbConsumer.toString());
-        return sbConsumer.toString();
-    }
-    
-    private String getUpstreamEndpoint() {
-    	StringBuilder sbConsumer = new StringBuilder();
-    	
-    	String envvar = System.getenv("RMQ_UPSTREAM_CS");
-    	if(StringUtils.isEmpty(envvar)) {
-    		sbConsumer.append("undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut");
-    	}else {
-    		sbConsumer.append(envvar);
-    	}
-    	
-    	System.out.println("CONFIGURATION -> RMQ_UPSTREAM_CS=" + sbConsumer.toString());
-        return sbConsumer.toString();
-    }
-    
-    private long getProcessTimeSimulationMs() {
-    	String pts = System.getenv("PROCESS_TIME_SIMULATION_MS");
+		String envvar = System.getenv("RMQ_CONSUMER_QUEUE_CS");
+		if (StringUtils.isEmpty(envvar)) {
+			sbConsumer.append("rabbitmq:myexchange?").append("connectionFactory=#consumerConnectionFactoryService")
+					.append("&queue=myqueue").append("&routingKey=main").append("&durable=true")
+					.append("&autoDelete=false").append("&automaticRecoveryEnabled=true").append("&exclusive=false")
+					.append("&autoAck=false").append("&concurrentConsumers=2").append("&prefetchCount=2")
+					.append("&prefetchEnabled=true").append("&transferException=true");
+		} else {
+			sbConsumer.append(envvar);
+		}
+
+		System.out.println("CONFIGURATION -> RMQ_CONSUMER_QUEUE_CS=" + sbConsumer.toString());
+		return sbConsumer.toString();
+	}
+
+	private String getDLQEndpoint() {
+		StringBuilder sbConsumer = new StringBuilder();
+
+		String envvar = System.getenv("RMQ_CONSUMER_DLQ_CS");
+		if (StringUtils.isEmpty(envvar)) {
+			sbConsumer.append("rabbitmq:myexchange?").append("connectionFactory=#consumerConnectionFactoryService")
+					.append("&queue=myqueueDLQ").append("&durable=true").append("&autoDelete=false")
+					.append("&automaticRecoveryEnabled=true").append("&exchangePattern=InOnly")
+					.append("&routingKey=dlq").append("&exclusive=false").append("&autoAck=false")
+					.append("&transferException=true");
+		} else {
+			sbConsumer.append(envvar);
+		}
+
+		System.out.println("CONFIGURATION -> RMQ_CONSUMER_DLQ_CS=" + sbConsumer.toString());
+		return sbConsumer.toString();
+	}
+
+	private String getUpstreamEndpoint() {
+		StringBuilder sbConsumer = new StringBuilder();
+
+		String envvar = System.getenv("RMQ_UPSTREAM_CS");
+		if (StringUtils.isEmpty(envvar)) {
+			sbConsumer.append(
+					"undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut");
+		} else {
+			sbConsumer.append(envvar);
+		}
+
+		System.out.println("CONFIGURATION -> RMQ_UPSTREAM_CS=" + sbConsumer.toString());
+		return sbConsumer.toString();
+	}
+
+	private long getProcessTimeSimulationMs() {
+		String pts = System.getenv("PROCESS_TIME_SIMULATION_MS");
 		long lpts = 300;
 		try {
 			lpts = Long.parseLong(pts);
-		}catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			lpts = 300;
 		}
 		System.out.println("CONFIGURATION -> PROCESS_TIME_SIMULATION_MS=" + lpts);
 		return lpts;
-    }
-    
-    private boolean isDisableSuspensionEnabled() {
-    	boolean disableSuspension = "true".equals(System.getenv("DISABLE_SUSPENSION"));
+	}
+
+	private boolean isDisableSuspensionEnabled() {
+		boolean disableSuspension = "true".equals(System.getenv("DISABLE_SUSPENSION"));
 		System.out.println("CONFIGURATION -> DISABLE_SUSPENSION=" + disableSuspension);
 		return disableSuspension;
-    }
-    
+	}
+
 }
