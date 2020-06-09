@@ -64,10 +64,11 @@ Access RabbitMQ
 ```
 kubectl port-forward $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) 15672:15672
 ```
-open browser at http://localhost:15672
+Open browser at http://localhost:15672
 
 
 Kill envoy-proxy (to test failure recovery)
+
 ```
 kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
 kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
@@ -81,6 +82,23 @@ kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..m
 kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
 kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
 ```
+
+GET envoy stats (_istio_requests_total)
+
+```
+kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/stats?format=json -X GET | jq . > upstream_envoy_stats.json & code upstream_envoy_stats.json
+```
+
+RESET envoy stats 
+
+```
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
+kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
+kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
+```
+
+
 
 Monitoring logs
 
