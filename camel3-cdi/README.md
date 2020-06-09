@@ -135,6 +135,9 @@ Pure Camel 3 CDI microservice that expose a HTTP endpoint and store messages in 
 ## cdi-rabbit-consumer
 Pure Camel 3 CDI microservice that read messages from RabbitMQ.
 
+## cdi-rabbitmq kubernetes+istio
+[Deployment scripts to deploy cdi-rabbit-producer, cdi-rabbit-consumer, upstream and rabbitmq in kubernetes+istio.](https://github.com/Emmerson-Miranda/camel/tree/master/camel3-cdi/istio07-camel-cdi-rabbitmq)
+
 
 # The Dependency Inyection
 Camel says:
