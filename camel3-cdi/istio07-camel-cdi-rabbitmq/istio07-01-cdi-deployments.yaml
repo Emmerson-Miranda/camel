@@ -1,4 +1,16 @@
 apiVersion: v1
+data:
+  DISABLE_SUSPENSION: "false"
+  PROCESS_TIME_SIMULATION_MS: "200"
+  RMQ_CONSUMER_DLQ_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueueDLQ&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exchangePattern=InOnly&routingKey=dlq&exclusive=false&autoAck=false&transferException=true"
+  RMQ_CONSUMER_QUEUE_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueue&routingKey=main&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exclusive=false&autoAck=false&concurrentConsumers=10&prefetchCount=2&prefetchEnabled=true&transferException=true"
+  RMQ_UPSTREAM_CS: "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut"
+kind: ConfigMap
+metadata:
+  name: consumer-configmap
+
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
@@ -194,5 +206,8 @@ spec:
         - containerPort: 9999
         - containerPort: 16000
         resources: {}
+        envFrom:
+          - configMapRef:
+              name: consumer-configmap
       dnsPolicy: ClusterFirst
       restartPolicy: Always

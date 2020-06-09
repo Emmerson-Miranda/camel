@@ -32,19 +32,13 @@ public class ConsumerRouteBuilder extends RouteBuilder {
         onException(Throwable.class)
 	        .maximumRedeliveries(2)
 	        .handled(true)
-	        .log("onException: ${exception.message}")
-	        .log("onException: ${exception}")
+	        .log("onException:: ${header.X-Correlation-ID} :: ${exception.message} :: ${exception}")
 	        .asyncDelayedRedelivery().redeliveryDelay(1000)
 	        .onExceptionOccurred(new Processor() {
 
 				@Override
 				public void process(Exchange exchange) throws Exception {
-					exchange.getProperties().forEach((k,v) -> {
-						System.out.println("onExceptionOccurred:property:" + k + ":" + v);
-					});
-					exchange.getIn().getHeaders().forEach((k,v) -> {
-						System.out.println("onExceptionOccurred:header:" + k + ":" + v);
-					});
+					printExchange("onExceptionOccurred", exchange);
 				}
 	        	
 	        })
@@ -64,12 +58,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 					System.out.println(ex.getStatusText());
 					System.out.println(ex.getMessage());
 					*/
-					exchange.getProperties().forEach((k,v) -> {
-						System.out.println("onRedelivery:property:" + k + ":" + v);
-					});
-					exchange.getIn().getHeaders().forEach((k,v) -> {
-						System.out.println("onRedelivery:header:" + k + ":" + v);
-					});
+					printExchange("onRedelivery", exchange);
 				}
 	        	
 	        }
@@ -108,8 +97,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
         //
         from("direct:target")
 	        .routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
-	        .log(">>> ...........................................................")
-	        .log("Message to be sent: ${header.X-Correlation-ID}")
+	        .log("Message to send: ${header.X-Correlation-ID}")
 	        .choice()
 	        	.when(header("test-scenario").isEqualTo("ko"))
 		        	.process((m) -> {
@@ -119,17 +107,30 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 	        .process(new Processor() {
 				@Override
 				public void process(Exchange exchange) throws Exception {
-					System.out.println("Start delay.");
 					Thread.sleep(lpts);
-					System.out.println("Finish delay.");
 				}
 	        	
 	        })
 	        .to(getUpstreamEndpoint())
-	        .log("<<< ...........................................................")
+	        .log("Message sended: ${header.X-Correlation-ID}")
 	        ;
         ;
     }
+	
+	private void printExchange(String prefix, Exchange exchange) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("\n........................................................\n");
+		exchange.getProperties().forEach((k,v) -> {
+			sb.append(prefix).append(":property:" + k + ":" + v).append("\n");
+		});
+		exchange.getIn().getHeaders().forEach((k,v) -> {
+			sb.append(prefix).append(":header:" + k + ":" + v).append("\n");
+		});
+		sb.append("........................................................\n");
+		
+		System.out.println(sb.toString());
+	}
 
 
     private String getQueueEndpoint() {
