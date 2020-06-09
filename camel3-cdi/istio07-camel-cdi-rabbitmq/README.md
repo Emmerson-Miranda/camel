@@ -49,12 +49,45 @@ Curl commands to test
 ```
 curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/prometheus
 
+curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/consumer/prometheus  | grep "amqp_consumer" | more
+
 curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/upstream/service -d "body" -H "X-US-SCENARIO: 200" 
 
 curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/service -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" 
 
 curl -v -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/service -d "{\"ok\": \"value with error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 500" 
-
-
 ```
 
+## Utility commands
+
+Access RabbitMQ
+```
+kubectl port-forward $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) 15672:15672
+```
+open browser at http://localhost:15672
+
+
+Kill envoy-proxy (to test failure recovery)
+```
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
+kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
+```
+
+Changing istio-proxy logging level 
+(levels: trace debug info warning error critical off)
+https://www.envoyproxy.io/docs/envoy/latest/operations/admin
+```
+kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
+kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
+```
+
+Monitoring logs
+
+```
+kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer
+kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
+
+kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c rabbitmq
+kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
+```

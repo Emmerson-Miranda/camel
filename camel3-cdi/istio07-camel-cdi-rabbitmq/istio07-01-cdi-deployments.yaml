@@ -49,8 +49,8 @@ spec:
     port: 9090
     targetPort: 9090
   - name: prometheus
-    port: 9999
-    targetPort: 9999
+    port: 8888
+    targetPort: 8888
   - name: jmx
     port: 16000
     targetPort: 16000

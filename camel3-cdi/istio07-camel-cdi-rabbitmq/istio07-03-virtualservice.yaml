@@ -39,7 +39,7 @@ spec:
     route:
     - destination:
         port:
-          number: 9999
+          number: 8888
         host: consumer-service
   - name: "upstream_service"
     match:
