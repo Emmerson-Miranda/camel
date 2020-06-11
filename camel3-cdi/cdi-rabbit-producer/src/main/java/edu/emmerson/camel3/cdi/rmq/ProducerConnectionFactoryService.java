@@ -1,6 +1,7 @@
 package edu.emmerson.camel3.cdi.rmq;
 
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 /**
@@ -9,17 +10,17 @@ import javax.inject.Named;
  * @author emmersonmiranda
  *
  */
+@ApplicationScoped
 @Named("producerConnectionFactoryService")
 public class ProducerConnectionFactoryService extends com.rabbitmq.client.ConnectionFactory {
 
 	public ProducerConnectionFactoryService() {
 		super();
-		super.setHost("rabbitmq");
-		super.setPort(5672);
-		super.setUsername("guest");
-		super.setPassword("guest");
-		super.setVirtualHost("/");
-		//super.getClientProperties()
+		super.setHost(ConfigReader.getRabbitHost());
+		super.setPort(ConfigReader.getRabbitPort());
+		super.setUsername(ConfigReader.getRabbitUsername());
+		super.setPassword(ConfigReader.getRabbitPassword());
+		super.setVirtualHost(ConfigReader.getRabbitVirtualHost());
 	}
 
 }

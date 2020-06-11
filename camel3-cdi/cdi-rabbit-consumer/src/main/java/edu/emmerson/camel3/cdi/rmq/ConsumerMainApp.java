@@ -7,6 +7,14 @@ import org.apache.camel.cdi.Main;
 
 public class ConsumerMainApp {
 	
+	/**
+	 * Before run main method
+	 * 1 - Start rabbitmq docker - docker run -d --hostname rabbitmq --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+	 * 2 - Start upstream docker - docker run -d -p 10003:10003 --name upstream-mock upstream:mock
+	 * 3 - Start envoy docker    - see envoy/readme.md
+	 * @param args
+	 * @throws Exception
+	 */
     public static void main(String... args) throws Exception {
     	
     	Manifest mf = new Manifest(ConsumerMainApp.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
@@ -16,6 +24,9 @@ public class ConsumerMainApp {
     	System.out.println("------------------- Starting with shared main library -------------------");
     	
     	System.setProperty(JmxSystemPropertyKeys.DISABLED, "false");
+    	
+    	System.setProperty(ConfigReader.RABBIT_PORT, "25672");
+    	System.setProperty(ConfigReader.RABBIT_HOST, "localhost");
     	
         Main main = new Main();
 

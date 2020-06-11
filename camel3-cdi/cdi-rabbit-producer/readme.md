@@ -22,7 +22,7 @@ Run following commands drop a message in RabbitMQ, the headers will specify how 
 
 Run following commands drop a message in RabbitMQ, the headers will specify how the consumer is going to behave:
 
-$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:8080/rmq/publish
+$ curl -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:8080/rmq/publish
 
 $ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 400" -X POST http://0.0.0.0:8080/rmq/publish
 

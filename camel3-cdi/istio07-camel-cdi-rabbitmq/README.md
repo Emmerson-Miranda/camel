@@ -74,7 +74,7 @@ kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..m
 kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/quitquitquit -X POST
 ```
 
-Changing istio-proxy logging level (levels: trace debug info warning error critical off)
+Changing envoy (istio-proxy) logging level (levels: trace debug info warning error critical off)
 
 https://www.envoyproxy.io/docs/envoy/latest/operations/admin
 ```
@@ -82,6 +82,15 @@ kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..m
 kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
 kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?level=debug -X POST
 ```
+
+Envoy granular log configuration
+
+```
+kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?http=debug -X POST
+
+kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?http2=debug -X POST
+```
+
 
 GET envoy stats (_istio_requests_total)
 
@@ -92,10 +101,7 @@ kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..m
 RESET envoy stats 
 
 ```
-kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
-kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
-kubectl exec $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
-kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/reset_counters -X POST 
+./istio07-reset-envoy-counters.sh
 ```
 
 
@@ -109,3 +115,4 @@ kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items
 kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c rabbitmq
 kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
 ```
+

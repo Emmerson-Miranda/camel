@@ -11,6 +11,8 @@ public class ProducerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+    	
+    	long lpts = ConfigReader.getProcessTimeSimulationMs();
 
         // configure we want to use undertow as the component for the rest DSL
         restConfiguration().component("undertow")
@@ -28,17 +30,7 @@ public class ProducerRouteBuilder extends RouteBuilder {
             .post("/publish").id("rmq-publish-resource").description("Publish a message in RabbitMQ")
                 .responseMessage().code(204).message("Message storaged").endResponseMessage()
                 .to("direct:publishMessage");
-        
-        StringBuilder sbPub = new StringBuilder();
-        sbPub.append("rabbitmq:myexchange?")
-        .append("connectionFactory=#producerConnectionFactoryService")
-        .append("&routingKey=main")
-        .append("&queue=myqueue")
-        .append("&durable=true")
-        .append("&autoDelete=false")
-        .append("&exclusive=false")
-        .append("&exchangePattern=InOnly")
-        ;
+
         
         from("direct:publishMessage")
         .routeId(ProducerRouteBuilder.class.getName())
@@ -46,9 +38,14 @@ public class ProducerRouteBuilder extends RouteBuilder {
         	m.setHeader("custom.messageId", UUID.randomUUID().toString());
 			m.setHeader("custom.currentTimeMillis", System.currentTimeMillis());
 			m.setHeader("custom.Date", Instant.now().toString());
+			try {
+				Thread.sleep(lpts);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         })
         .log("Message to be sent: ${body}")
-        .to(sbPub.toString());
+        .to(ConfigReader.getQueueEndpoint());
     }
 
 }

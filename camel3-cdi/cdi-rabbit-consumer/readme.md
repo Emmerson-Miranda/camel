@@ -442,3 +442,29 @@ process_max_fds 10240.0
 
 ![JMX Console View](jmx_metrics.png "JMX Console View")  
 
+
+# Error handling
+
+## Stack trace when connection is closed after get upstream response
+
+```
+[                  XNIO-1 I/O-1] direct                         INFO  Message sended: 
+[ead #4 - rabbitmq://myexchange] ForgivingExceptionHandler      ERROR Consumer org.apache.camel.component.rabbitmq.RabbitConsumer@66464c40 (amq.ctag-29VbbqplZ3mcswk_C_tdqA) method handleDelivery for channel AMQChannel(amqp://guest@127.0.0.1:25672/,1) threw an exception for channel AMQChannel(amqp://guest@127.0.0.1:25672/,1)
+com.rabbitmq.client.AlreadyClosedException: connection is already closed due to connection error; cause: java.io.EOFException
+	at com.rabbitmq.client.impl.AMQChannel.ensureIsOpen(AMQChannel.java:258) ~[amqp-client-5.9.0.jar:5.9.0]
+	at com.rabbitmq.client.impl.AMQChannel.transmit(AMQChannel.java:427) ~[amqp-client-5.9.0.jar:5.9.0]
+	at com.rabbitmq.client.impl.AMQChannel.transmit(AMQChannel.java:421) ~[amqp-client-5.9.0.jar:5.9.0]
+	at com.rabbitmq.client.impl.recovery.RecoveryAwareChannelN.basicAck(RecoveryAwareChannelN.java:93) ~[amqp-client-5.9.0.jar:5.9.0]
+	at com.rabbitmq.client.impl.recovery.AutorecoveringChannel.basicAck(AutorecoveringChannel.java:428) ~[amqp-client-5.9.0.jar:5.9.0]
+	at org.apache.camel.component.rabbitmq.RabbitConsumer.doHandleDelivery(RabbitConsumer.java:138) ~[camel-rabbitmq-3.3.0.jar:3.3.0]
+	at org.apache.camel.component.rabbitmq.RabbitConsumer.handleDelivery(RabbitConsumer.java:82) ~[camel-rabbitmq-3.3.0.jar:3.3.0]
+	at com.rabbitmq.client.impl.ConsumerDispatcher$5.run(ConsumerDispatcher.java:149) [amqp-client-5.9.0.jar:5.9.0]
+	at com.rabbitmq.client.impl.ConsumerWorkService$WorkPoolRunnable.run(ConsumerWorkService.java:104) [amqp-client-5.9.0.jar:5.9.0]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [?:1.8.0_181]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[ead #9 - rabbitmq://myexchange] RabbitConsumer                 INFO  Received shutdown signal on the rabbitMQ channel
+[ead #9 - rabbitmq://myexchange] RabbitConsumer                 WARN  Unable to obtain a RabbitMQ channel. Will try again. Caused by: Waiting for channel to re-open.. Stacktrace logged at DEBUG logging level.
+```
+
+

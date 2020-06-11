@@ -5,9 +5,19 @@ data:
   RMQ_CONSUMER_DLQ_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueueDLQ&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exchangePattern=InOnly&routingKey=dlq&exclusive=false&autoAck=false&transferException=true"
   RMQ_CONSUMER_QUEUE_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueue&routingKey=main&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exclusive=false&autoAck=false&concurrentConsumers=10&prefetchCount=2&prefetchEnabled=true&transferException=true"
   RMQ_UPSTREAM_CS: "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut"
+  RABBIT_DISCONNECTION_IDLE_MS: "7000"
 kind: ConfigMap
 metadata:
   name: consumer-configmap
+
+---
+apiVersion: v1
+data:
+  PROCESS_TIME_SIMULATION_MS: "100"
+  RMQ_PRODUCER_QUEUE_CS: "rabbitmq:myexchange?connectionFactory=#producerConnectionFactoryService&routingKey=main&queue=myqueue&durable=true&autoDelete=false&exclusive=false&exchangePattern=InOnly"
+kind: ConfigMap
+metadata:
+  name: producer-configmap
 
 ---
 apiVersion: v1
@@ -166,7 +176,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: emmerson/cdi-rabbit-producer:1.0.5
+      - image: emmerson/cdi-rabbit-producer:1.0.6
         imagePullPolicy: IfNotPresent
         name: cdi-rabbit-producer
         ports:
@@ -174,6 +184,9 @@ spec:
         - containerPort: 8888
         - containerPort: 16000
         resources: {}
+        envFrom:
+          - configMapRef:
+              name: producer-configmap
       dnsPolicy: ClusterFirst
       restartPolicy: Always
 
@@ -198,7 +211,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: emmerson/cdi-rabbit-consumer:1.0.5
+      - image: emmerson/cdi-rabbit-consumer:1.0.6
         imagePullPolicy: IfNotPresent
         name: cdi-rabbit-consumer
         ports:
