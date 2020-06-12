@@ -109,6 +109,9 @@ RESET envoy stats
 Monitoring logs
 
 ```
+kubectl logs -f $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-producer
+kubectl logs -f $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
+
 kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer
 kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
 

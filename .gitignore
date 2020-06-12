@@ -14,3 +14,4 @@ buildNumber.properties
 helloworld-camel-spring-boot/.classpath
 helloworld-camel-spring-boot/.settings/org.eclipse.jdt.core.prefs
 camel-java8-activemq/.classpath
+camel3-cdi/cdi-rabbit-consumer/onException.log

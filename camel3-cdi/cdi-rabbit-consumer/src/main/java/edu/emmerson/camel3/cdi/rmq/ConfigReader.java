@@ -5,6 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 public class ConfigReader {
 
 
+	public static final String DISABLE_SUSPENSION = "DISABLE_SUSPENSION";
+
+	public static final String RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE = "RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE";
+
 	public static final String RABBIT_HOST = "RABBIT_HOST";
 
 	public static final String RABBIT_PORT = "RABBIT_PORT";
@@ -43,9 +47,18 @@ public class ConfigReader {
 	}
 	
 	public static boolean isDisableSuspensionEnabled() {
-		boolean disableSuspension = "true".equals( getEnvVar("DISABLE_SUSPENSION", "false") );
+		return "true".equals( getEnvVar(DISABLE_SUSPENSION, "false") );
+	}
+	
+	public static boolean isRabbitClientSleepOndisconnectionEnabled() {
+		boolean disableSuspension = "true".equals( getEnvVar(RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE, "false") );
 		return disableSuspension;
 	}
+	
+	public static int getRabbitClientSleepOndisconnectionMS() {
+		return Integer.parseInt(getEnvVar("RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_MS", "5000"));
+	}
+	
 	
 	public static int getRabbitPort() {
 		String tmp = getEnvVar(RABBIT_PORT, "5672");
@@ -66,10 +79,6 @@ public class ConfigReader {
 	
 	public static String getRabbitHost() {
 		return getEnvVar(RABBIT_HOST, "rabbitmq");
-	}
-	
-	public static int getDisconnectionIdle() {
-		return Integer.parseInt(getEnvVar("RABBIT_DISCONNECTION_IDLE_MS", "7000"));
 	}
 	
 	public static String getEnvVar(String envVarName, String defaultValue) {

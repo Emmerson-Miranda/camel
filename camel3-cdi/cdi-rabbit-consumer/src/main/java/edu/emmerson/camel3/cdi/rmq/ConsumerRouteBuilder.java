@@ -9,6 +9,10 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 /**
  * 
  * @author emmersonmiranda
@@ -16,6 +20,8 @@ import org.apache.camel.component.rabbitmq.RabbitMQConstants;
  *
  */
 public class ConsumerRouteBuilder extends RouteBuilder {
+	
+	private static final Logger logger  = LogManager.getLogger("onException");
 
 	public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
 
@@ -46,7 +52,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					printExchange("onRedelivery", exchange);
-					analyzeException("onExceptionOccurred", exchange);
+					analyzeException("onRedelivery", exchange);
 				}
 	
 			})
@@ -57,7 +63,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				@Override
 				public void process(Exchange exchange) throws Exception {
 					printExchange("onException", exchange);
-					analyzeException("onExceptionOccurred", exchange);
+					analyzeException("onException", exchange);
 				}
 				
 			})
@@ -125,10 +131,17 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				|| (e instanceof com.rabbitmq.client.TopologyRecoveryException)
 				|| (e instanceof com.rabbitmq.client.AlreadyClosedException)
 				|| (e instanceof com.rabbitmq.client.ShutdownSignalException)
+				|| (e instanceof java.net.ConnectException)
+				
 		) {
-			int disconnectionIdle = ConfigReader.getDisconnectionIdle();
-			System.out.println(prefix + ": Thread.sleep " + disconnectionIdle);
-			Thread.sleep(disconnectionIdle);
+			if(ConfigReader.isRabbitClientSleepOndisconnectionEnabled()) {
+				int disconnectionIdle = ConfigReader.getRabbitClientSleepOndisconnectionMS();
+				System.out.println(prefix + ": Thread.sleep ms: " + disconnectionIdle);
+				Thread.sleep(disconnectionIdle);
+			}else {
+				System.out.println(prefix + ": Thread.sleep disabled.");
+			}
+			
 		}
 		
 		/*
@@ -149,9 +162,12 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		exchange.getIn().getHeaders().forEach((k, v) -> {
 			sb.append(prefix).append(":header:" + k + ":" + v).append("\n");
 		});
-		sb.append(prefix).append(":body:" + exchange.getIn().getBody().toString()).append("\n");
+		String body =  exchange.getIn().getBody().getClass().getName();
+		sb.append(prefix).append(":body:" + body ).append("\n");
 		sb.append("........................................................\n");
 
+		logger.debug(sb.toString());
+	    	
 		System.out.println(sb.toString());
 	}
 

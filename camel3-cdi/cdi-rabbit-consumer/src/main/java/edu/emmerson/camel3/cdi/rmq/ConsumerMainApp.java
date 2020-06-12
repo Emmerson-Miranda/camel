@@ -1,7 +1,5 @@
 package edu.emmerson.camel3.cdi.rmq;
 
-import java.util.jar.Manifest;
-
 import org.apache.camel.api.management.JmxSystemPropertyKeys;
 import org.apache.camel.cdi.Main;
 
@@ -17,16 +15,20 @@ public class ConsumerMainApp {
 	 */
     public static void main(String... args) throws Exception {
     	
-    	Manifest mf = new Manifest(ConsumerMainApp.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
-        System.out.println(mf.getMainAttributes().getValue("Main-Class"));
-        System.out.println(mf.getMainAttributes().getValue("Class-Path"));
+    	//Manifest mf = new Manifest(ConsumerMainApp.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
+        //System.out.println(mf.getMainAttributes().getValue("Main-Class"));
+        //System.out.println(mf.getMainAttributes().getValue("Class-Path"));
         
     	System.out.println("------------------- Starting with shared main library -------------------");
+    	
     	
     	System.setProperty(JmxSystemPropertyKeys.DISABLED, "false");
     	
     	System.setProperty(ConfigReader.RABBIT_PORT, "25672");
     	System.setProperty(ConfigReader.RABBIT_HOST, "localhost");
+    	System.setProperty(ConfigReader.RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE, "false");
+    	System.setProperty(ConfigReader.DISABLE_SUSPENSION, "true");
+    	
     	
         Main main = new Main();
 
