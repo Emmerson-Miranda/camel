@@ -91,13 +91,6 @@ kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..m
 kubectl exec $(kubectl get pod -l app=producer -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/logging?http2=debug -X POST
 ```
 
-
-GET envoy stats (_istio_requests_total)
-
-```
-kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/stats?format=json -X GET | jq . > upstream_envoy_stats.json & code upstream_envoy_stats.json
-```
-
 RESET envoy stats 
 
 ```
@@ -117,5 +110,31 @@ kubectl logs -f $(kubectl get pod -l app=consumer -n default -o jsonpath={.items
 
 kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c rabbitmq
 kubectl logs -f $(kubectl get pod -l app=rabbitmq -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
+
+
+kubectl logs -f $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c upstream
+kubectl logs -f $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy
 ```
 
+GET envoy stats (_istio_requests_total)
+
+```
+kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c istio-proxy -- curl localhost:15000/stats?format=json -X GET | jq . > ~/Documents/GitHub/camel/camel3-cdi/istio07-camel-cdi-rabbitmq/upstream_envoy_stats.json & code ~/Documents/GitHub/camel/camel3-cdi/istio07-camel-cdi-rabbitmq/upstream_envoy_stats.json
+```
+
+Get logs into host machine
+
+```
+kubectl logs $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c upstream > ~/Documents/GitHub/camel/camel3-cdi/istio07-camel-cdi-rabbitmq/upstream.log 
+
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer  -- cat /var/log/onException.log  > ~/Documents/GitHub/camel/camel3-cdi/istio07-camel-cdi-rabbitmq/onException.log
+
+```
+
+Get into command line
+
+```
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer -it -- /bin/sh
+
+kubectl exec $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name}) -c upstream -it -- /bin/sh
+```
