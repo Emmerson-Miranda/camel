@@ -9,6 +9,8 @@ data:
   RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_MS: "5000"
   RABBIT_HOST: "rabbitmq"
   RABBIT_PORT: "5672"
+  CAMEL_REDELIVERY_DELAY_MS: "300"
+  CAMEL_MAXIMUM_REDELIVERIES: "3"
 kind: ConfigMap
 metadata:
   name: consumer-configmap

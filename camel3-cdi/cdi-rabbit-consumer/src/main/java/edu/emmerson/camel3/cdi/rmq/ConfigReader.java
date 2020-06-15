@@ -13,7 +13,11 @@ public class ConfigReader {
 
 	public static final String RABBIT_PORT = "RABBIT_PORT";
 	
-	private static final String DEFAULT_UPSTREAM_CS = "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut";
+	public static final String DEFAULT_UPSTREAM_CS = "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut";
+
+	public static final String CAMEL_MAXIMUM_REDELIVERIES = "CAMEL_MAXIMUM_REDELIVERIES";
+
+	public static final String CAMEL_REDELIVERY_DELAY_MS = "CAMEL_REDELIVERY_DELAY_MS";
 
 	public static String getUpstreamEndpoint() {
 		return getEnvVar("RMQ_UPSTREAM_CS", DEFAULT_UPSTREAM_CS);
@@ -89,6 +93,16 @@ public class ConfigReader {
 
 		System.out.println("CONFIGURATION -> " + envVarName + "=" + tmp);
 		return tmp;
+	}
+
+	public static int getCamelMaximumRedeliveries() {
+		String tmp = getEnvVar(CAMEL_MAXIMUM_REDELIVERIES, "2");
+		return Integer.parseInt(tmp);
+	}
+
+	public static int getCamelRedeliveryDelay() {
+		String tmp = getEnvVar(CAMEL_REDELIVERY_DELAY_MS, "1000");
+		return Integer.parseInt(tmp);
 	}
 	
 }
