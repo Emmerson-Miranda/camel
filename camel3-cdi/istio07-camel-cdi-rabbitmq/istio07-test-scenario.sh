@@ -5,7 +5,8 @@ echo "====================================================="
 echo "*****************************************************"
 echo ""
 #generating prefix for all x-correlation-id calls
-reqIdPrefix=`env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 4`
+#reqIdPrefix=`env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 4`
+reqIdPrefix=`uuidgen`
 echo "x-correlation-id prefix $reqIdPrefix"
 
 #setting total requests to send
