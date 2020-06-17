@@ -1,10 +1,13 @@
 package edu.emmerson.camel3.cdi.rmq;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigReader {
 
-
+	private static final Logger logger  = LogManager.getLogger(ConfigReader.class);
+	
 	public static final String DISABLE_SUSPENSION = "DISABLE_SUSPENSION";
 
 	public static final String RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE = "RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE";
@@ -18,6 +21,8 @@ public class ConfigReader {
 	public static final String CAMEL_MAXIMUM_REDELIVERIES = "CAMEL_MAXIMUM_REDELIVERIES";
 
 	public static final String CAMEL_REDELIVERY_DELAY_MS = "CAMEL_REDELIVERY_DELAY_MS";
+
+	public static final String CAMEL_IDEMPOTENT_REPOSITORY_SIZE = "CAMEL_IDEMPOTENT_REPOSITORY_SIZE";
 
 	public static String getUpstreamEndpoint() {
 		return getEnvVar("RMQ_UPSTREAM_CS", DEFAULT_UPSTREAM_CS);
@@ -91,7 +96,7 @@ public class ConfigReader {
 			tmp = System.getProperty(envVarName, defaultValue);
 		}
 
-		System.out.println("CONFIGURATION -> " + envVarName + "=" + tmp);
+		logger.info("CONFIGURATION -> " + envVarName + "=" + tmp);
 		return tmp;
 	}
 
@@ -102,6 +107,11 @@ public class ConfigReader {
 
 	public static int getCamelRedeliveryDelay() {
 		String tmp = getEnvVar(CAMEL_REDELIVERY_DELAY_MS, "1000");
+		return Integer.parseInt(tmp);
+	}
+	
+	public static int getCamelIdempotentRepositorySize() {
+		String tmp = getEnvVar(CAMEL_IDEMPOTENT_REPOSITORY_SIZE, "200");
 		return Integer.parseInt(tmp);
 	}
 	

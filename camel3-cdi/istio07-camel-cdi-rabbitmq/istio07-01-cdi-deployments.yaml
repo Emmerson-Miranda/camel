@@ -216,7 +216,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: emmerson/cdi-rabbit-consumer:1.0.8
+      - image: emmerson/cdi-rabbit-consumer:1.0.9
         imagePullPolicy: IfNotPresent
         name: cdi-rabbit-consumer
         ports:

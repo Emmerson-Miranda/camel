@@ -2,6 +2,8 @@ package edu.emmerson.camel3.cdi.rmq;
 
 import java.util.LinkedHashMap;
 
+import javax.inject.Inject;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
@@ -19,6 +21,8 @@ import edu.emmerson.camel3.cdi.rmq.processor.CustomErrorHandlerProcessor;
  */
 public class ConsumerRouteBuilder extends RouteBuilder {
 
+	@Inject
+	MyIdempotentRepository myIdempotentRepository;
 	
 	public static final String RABBITMQ_ROUTING_KEY = "rabbit.consumer";
 
@@ -67,6 +71,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		from(ConfigReader.getQueueEndpoint())
 			.routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
 			.routePolicy(mrp)
+			.idempotentConsumer(header("X-Correlation-ID"), myIdempotentRepository)
 			.to("direct:target");
 
 		//
