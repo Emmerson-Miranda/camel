@@ -10,14 +10,14 @@ reqIdPrefix=`uuidgen`
 echo "x-correlation-id prefix $reqIdPrefix"
 
 #setting total requests to send
-maxRequests=320
+maxRequests=900
 
 #setting new POD configuration
-kubectl apply -f istio07-test-scenario-01b.yaml
+kubectl apply -f istio07-test-scenario-02b.yaml
 
 #forcing reload of pods with new configMaps
-kubectl delete pod $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name})
 kubectl delete pod $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name})
+kubectl delete pod $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name})
 
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
@@ -73,6 +73,13 @@ numErrors=$(cat errors.txt | grep "x-correlation-id" | wc -l)
 echo ""
 echo ""
 echo "Total errors found $numErrors of $maxRequests"
+
+kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer  -- cat /var/log/onException.log  > onException.log
+
+
+cp upstream.log "log-$reqIdPrefix-upstream.log"
+cp onException.log "log-$reqIdPrefix-onException.log"
+cp errors.txt "log-$reqIdPrefix-errors.txt"
 
 #Test ended
 echo ""
