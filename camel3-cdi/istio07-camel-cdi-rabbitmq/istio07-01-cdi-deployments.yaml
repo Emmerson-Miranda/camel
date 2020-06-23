@@ -181,7 +181,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: emmerson/cdi-rabbit-producer:1.0.6
+      - image: emmerson/cdi-rabbit-producer:1.1.0
         imagePullPolicy: IfNotPresent
         name: cdi-rabbit-producer
         ports:
@@ -216,7 +216,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: emmerson/cdi-rabbit-consumer:1.0.9
+      - image: emmerson/cdi-rabbit-consumer:1.1.0
         imagePullPolicy: IfNotPresent
         name: cdi-rabbit-consumer
         ports:

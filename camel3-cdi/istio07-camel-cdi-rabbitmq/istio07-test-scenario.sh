@@ -30,9 +30,9 @@ while [  $counter -lt $maxRequests ]; do
    echo "Sending request with x-correlation-id $reqIdPrefix-$counter"
    curl -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/service -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: $reqIdPrefix-$counter" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" 
    echo ""
-   
 done
 
+curl -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/producer/prometheus > producer_prometheus.log
 
 echo "-----------------------------------------------------"
 #Waiting for full logs
@@ -57,7 +57,7 @@ counter=0
 while [  $counter -lt $maxRequests ]; do
    let counter=counter+1 
    echo "Checking request with x-correlation-id $reqIdPrefix-$counter"
-   resultsCounter=`cat upstream.log | grep "\[$reqIdPrefix-$counter\]" | wc -l`
+   resultsCounter=`cat upstream.log | grep "x-correlation-id: \[$reqIdPrefix-$counter\]" | wc -l`
    echo "x-correlation-id $reqIdPrefix-$counter counter $resultsCounter"
 
    if [[ $resultsCounter -ne 1 ]]
@@ -65,8 +65,9 @@ while [  $counter -lt $maxRequests ]; do
       echo "x-correlation-id $reqIdPrefix-$counter counter $resultsCounter"  >> errors.txt
       echo "" >> errors.txt
    fi
-
 done
+
+curl -HHost:poc07.istio.com http://$INGRESS_HOST:$INGRESS_PORT/consumer/prometheus > consumer_prometheus.log
 
 
 numErrors=$(cat errors.txt | grep "x-correlation-id" | wc -l)
@@ -76,10 +77,13 @@ echo "Total errors found $numErrors of $maxRequests"
 
 kubectl exec $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name}) -c cdi-rabbit-consumer  -- cat /var/log/onException.log  > onException.log
 
+mkdir -p logs
+cp upstream.log "logs/log-$reqIdPrefix-upstream.log"
+cp onException.log "logs/log-$reqIdPrefix-onException.log"
+cp errors.txt "logs/log-$reqIdPrefix-errors.txt"
+cp producer_prometheus.log "logs/log-$reqIdPrefix-producer_prometheus.txt"
+cp consumer_prometheus.log "logs/log-$reqIdPrefix-consumer_prometheus.txt"
 
-cp upstream.log "log-$reqIdPrefix-upstream.log"
-cp onException.log "log-$reqIdPrefix-onException.log"
-cp errors.txt "log-$reqIdPrefix-errors.txt"
 
 #Test ended
 echo ""

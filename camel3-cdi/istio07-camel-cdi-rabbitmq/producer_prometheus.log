@@ -1,0 +1,174 @@
+# HELP jmx_exporter_build_info A metric with a constant '1' value labeled with the version of the JMX exporter.
+# TYPE jmx_exporter_build_info gauge
+jmx_exporter_build_info{version="0.12.0",name="jmx_prometheus_javaagent",} 1.0
+# HELP jmx_config_reload_failure_total Number of times configuration have failed to be reloaded.
+# TYPE jmx_config_reload_failure_total counter
+jmx_config_reload_failure_total 0.0
+# HELP jvm_info JVM version info
+# TYPE jvm_info gauge
+jvm_info{version="1.8.0_121-b13",vendor="Oracle Corporation",runtime="OpenJDK Runtime Environment",} 1.0
+# HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
+# TYPE jvm_classes_loaded gauge
+jvm_classes_loaded 7413.0
+# HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
+# TYPE jvm_classes_loaded_total counter
+jvm_classes_loaded_total 7418.0
+# HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
+# TYPE jvm_classes_unloaded_total counter
+jvm_classes_unloaded_total 5.0
+# HELP jmx_config_reload_success_total Number of times configuration have successfully been reloaded.
+# TYPE jmx_config_reload_success_total counter
+jmx_config_reload_success_total 0.0
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_95thpercentile ms.mymscode.myqueuename.amqp.producer-95thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_95thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_95thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="95thPercentile",type="timers",} 101.180224
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_75thpercentile ms.mymscode.myqueuename.amqp.producer-75thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_75thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_75thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="75thPercentile",type="timers",} 100.866672
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_98thpercentile ms.mymscode.myqueuename.amqp.producer-98thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_98thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_98thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="98thPercentile",type="timers",} 101.461484
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_999thpercentile ms.mymscode.myqueuename.amqp.producer-999thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_999thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_999thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="999thPercentile",type="timers",} 109.32184
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_99thpercentile ms.mymscode.myqueuename.amqp.producer-99thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_99thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_99thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="99thPercentile",type="timers",} 102.052621
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_50thpercentile ms.mymscode.myqueuename.amqp.producer-50thPercentile [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_50thpercentile gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_50thpercentile{journey="ms.mymscode.myqueuename.amqp.producer",propname="50thPercentile",type="timers",} 100.723935
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_fifteenminuterate ms.mymscode.myqueuename.amqp.producer-FifteenMinuteRate [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_fifteenminuterate gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_fifteenminuterate{journey="ms.mymscode.myqueuename.amqp.producer",propname="FifteenMinuteRate",type="timers",} 0.9189953518649512
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_max ms.mymscode.myqueuename.amqp.producer-Max [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_max gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_max{journey="ms.mymscode.myqueuename.amqp.producer",propname="Max",type="timers",} 205.264426
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_fiveminuterate ms.mymscode.myqueuename.amqp.producer-FiveMinuteRate [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_fiveminuterate gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_fiveminuterate{journey="ms.mymscode.myqueuename.amqp.producer",propname="FiveMinuteRate",type="timers",} 2.4820966750181106
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_count ms.mymscode.myqueuename.amqp.producer-Count [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_count gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_count{journey="ms.mymscode.myqueuename.amqp.producer",propname="Count",type="timers",} 900.0
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_stddev ms.mymscode.myqueuename.amqp.producer-StdDev [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_stddev gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_stddev{journey="ms.mymscode.myqueuename.amqp.producer",propname="StdDev",type="timers",} 2.321417098038842
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_mean ms.mymscode.myqueuename.amqp.producer-Mean [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_mean gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_mean{journey="ms.mymscode.myqueuename.amqp.producer",propname="Mean",type="timers",} 100.85229194183721
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_oneminuterate ms.mymscode.myqueuename.amqp.producer-OneMinuteRate [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_oneminuterate gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_oneminuterate{journey="ms.mymscode.myqueuename.amqp.producer",propname="OneMinuteRate",type="timers",} 7.168996410074594
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_meanrate ms.mymscode.myqueuename.amqp.producer-MeanRate [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_meanrate gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_meanrate{journey="ms.mymscode.myqueuename.amqp.producer",propname="MeanRate",type="timers",} 6.077576729436951
+# HELP camel3_ms_mymscode_myqueuename_amqp_producer_min ms.mymscode.myqueuename.amqp.producer-Min [milliseconds]
+# TYPE camel3_ms_mymscode_myqueuename_amqp_producer_min gauge
+camel3_ms_mymscode_myqueuename_amqp_producer_min{journey="ms.mymscode.myqueuename.amqp.producer",propname="Min",type="timers",} 100.410241
+# HELP jmx_scrape_duration_seconds Time this JMX scrape took, in seconds.
+# TYPE jmx_scrape_duration_seconds gauge
+jmx_scrape_duration_seconds 0.092931384
+# HELP jmx_scrape_error Non-zero if this scrape failed.
+# TYPE jmx_scrape_error gauge
+jmx_scrape_error 0.0
+# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{gc="PS Scavenge",} 7.0
+jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 0.239
+jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 2.0
+jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 0.235
+# HELP jvm_memory_bytes_used Used bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_used gauge
+jvm_memory_bytes_used{area="heap",} 3.1960112E7
+jvm_memory_bytes_used{area="nonheap",} 6.0928568E7
+# HELP jvm_memory_bytes_committed Committed (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_committed gauge
+jvm_memory_bytes_committed{area="heap",} 2.40123904E8
+jvm_memory_bytes_committed{area="nonheap",} 6.3127552E7
+# HELP jvm_memory_bytes_max Max (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_max gauge
+jvm_memory_bytes_max{area="heap",} 2.328363008E9
+jvm_memory_bytes_max{area="nonheap",} -1.0
+# HELP jvm_memory_bytes_init Initial bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_init gauge
+jvm_memory_bytes_init{area="heap",} 1.65675008E8
+jvm_memory_bytes_init{area="nonheap",} 2555904.0
+# HELP jvm_memory_pool_bytes_used Used bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_used gauge
+jvm_memory_pool_bytes_used{pool="Code Cache",} 1.338176E7
+jvm_memory_pool_bytes_used{pool="Metaspace",} 4.225524E7
+jvm_memory_pool_bytes_used{pool="Compressed Class Space",} 5291568.0
+jvm_memory_pool_bytes_used{pool="PS Eden Space",} 7081416.0
+jvm_memory_pool_bytes_used{pool="PS Survivor Space",} 8832368.0
+jvm_memory_pool_bytes_used{pool="PS Old Gen",} 1.6046328E7
+# HELP jvm_memory_pool_bytes_committed Committed bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_committed gauge
+jvm_memory_pool_bytes_committed{pool="Code Cache",} 1.3500416E7
+jvm_memory_pool_bytes_committed{pool="Metaspace",} 4.395008E7
+jvm_memory_pool_bytes_committed{pool="Compressed Class Space",} 5677056.0
+jvm_memory_pool_bytes_committed{pool="PS Eden Space",} 1.29499136E8
+jvm_memory_pool_bytes_committed{pool="PS Survivor Space",} 1.2058624E7
+jvm_memory_pool_bytes_committed{pool="PS Old Gen",} 9.8566144E7
+# HELP jvm_memory_pool_bytes_max Max bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_max gauge
+jvm_memory_pool_bytes_max{pool="Code Cache",} 2.5165824E8
+jvm_memory_pool_bytes_max{pool="Metaspace",} -1.0
+jvm_memory_pool_bytes_max{pool="Compressed Class Space",} 1.073741824E9
+jvm_memory_pool_bytes_max{pool="PS Eden Space",} 8.48822272E8
+jvm_memory_pool_bytes_max{pool="PS Survivor Space",} 1.2058624E7
+jvm_memory_pool_bytes_max{pool="PS Old Gen",} 1.746403328E9
+# HELP jvm_memory_pool_bytes_init Initial bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_init gauge
+jvm_memory_pool_bytes_init{pool="Code Cache",} 2555904.0
+jvm_memory_pool_bytes_init{pool="Metaspace",} 0.0
+jvm_memory_pool_bytes_init{pool="Compressed Class Space",} 0.0
+jvm_memory_pool_bytes_init{pool="PS Eden Space",} 4.1418752E7
+jvm_memory_pool_bytes_init{pool="PS Survivor Space",} 6815744.0
+jvm_memory_pool_bytes_init{pool="PS Old Gen",} 1.10624768E8
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 17.17
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.592871648355E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 162.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 4.326199296E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.89263616E8
+# HELP jvm_buffer_pool_used_bytes Used bytes of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_bytes gauge
+jvm_buffer_pool_used_bytes{pool="direct",} 53166.0
+jvm_buffer_pool_used_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_capacity_bytes Bytes capacity of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_capacity_bytes gauge
+jvm_buffer_pool_capacity_bytes{pool="direct",} 53166.0
+jvm_buffer_pool_capacity_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_used_buffers Used buffers of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_buffers gauge
+jvm_buffer_pool_used_buffers{pool="direct",} 5.0
+jvm_buffer_pool_used_buffers{pool="mapped",} 0.0
+# HELP jvm_threads_current Current thread count of a JVM
+# TYPE jvm_threads_current gauge
+jvm_threads_current 22.0
+# HELP jvm_threads_daemon Daemon thread count of a JVM
+# TYPE jvm_threads_daemon gauge
+jvm_threads_daemon 9.0
+# HELP jvm_threads_peak Peak thread count of a JVM
+# TYPE jvm_threads_peak gauge
+jvm_threads_peak 31.0
+# HELP jvm_threads_started_total Started thread count of a JVM
+# TYPE jvm_threads_started_total counter
+jvm_threads_started_total 39.0
+# HELP jvm_threads_deadlocked Cycles of JVM-threads that are in deadlock waiting to acquire object monitors or ownable synchronizers
+# TYPE jvm_threads_deadlocked gauge
+jvm_threads_deadlocked 0.0
+# HELP jvm_threads_deadlocked_monitor Cycles of JVM-threads that are in deadlock waiting to acquire object monitors
+# TYPE jvm_threads_deadlocked_monitor gauge
+jvm_threads_deadlocked_monitor 0.0
