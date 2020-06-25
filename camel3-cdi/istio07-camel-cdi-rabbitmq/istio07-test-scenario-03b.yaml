@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  DISABLE_SUSPENSION: "true" 
+  PROCESS_TIME_SIMULATION_MS: "700"
+  RMQ_CONSUMER_DLQ_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueueDLQ&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exchangePattern=InOnly&routingKey=dlq&exclusive=false&autoAck=false&transferException=true"
+  RMQ_CONSUMER_QUEUE_CS: "rabbitmq:myexchange?connectionFactory=#consumerConnectionFactoryService&queue=myqueue&routingKey=main&durable=true&autoDelete=false&automaticRecoveryEnabled=true&exclusive=false&autoAck=false&concurrentConsumers=10&prefetchCount=5&prefetchEnabled=true&transferException=true"
+  RMQ_UPSTREAM_CS: "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut"
+  RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE: "false"
+  RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_MS: "5000"
+  RABBIT_HOST: "rabbitmq"
+  RABBIT_PORT: "5672"
+  CAMEL_REDELIVERY_DELAY_MS: "1000"
+  CAMEL_MAXIMUM_REDELIVERIES: "10"
+kind: ConfigMap
+metadata:
+  name: consumer-configmap

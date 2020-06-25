@@ -5,19 +5,25 @@ echo "====================================================="
 echo "*****************************************************"
 echo ""
 #generating prefix for all x-correlation-id calls
-#reqIdPrefix=`env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 4`
 reqIdPrefix=`uuidgen`
 echo "x-correlation-id prefix $reqIdPrefix"
 
 #setting total requests to send
-maxRequests=900
+maxRequests=700
+
+#setting consumer replicas
+consumerReplicas=3
 
 #setting new POD configuration
-kubectl apply -f istio07-test-scenario-02b.yaml
+kubectl apply -f istio07-test-scenario-03b.yaml
+
+#forcing number of replicas
+kubectl scale --replicas=$consumerReplicas deployment/consumer
 
 #forcing reload of pods with new configMaps
 kubectl delete pod $(kubectl get pod -l app=upstream -n default -o jsonpath={.items..metadata.name})
 kubectl delete pod $(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name})
+
 
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
@@ -49,6 +55,20 @@ while true; do
    fi
 done
 
+echo "-----------------------------------------------------"
+echo "Downloading pods logs"
+pods=$(kubectl get pod -l app=consumer -n default -o jsonpath={.items..metadata.name})
+echo "" > consumer_log_files.log
+rm consumer_log_files.log
+IFS=' ' # space is set as delimiter
+read -ra ADDR <<< "$pods" # pods is read into an array as tokens separated by IFS
+for i in "${ADDR[@]}"; do # access each element of array
+    echo "$i-console.log" >> consumer_log_files.log
+    echo "$i" > "$i-console.log"
+    kubectl logs $i -c cdi-rabbit-consumer >> "$i-console.log"
+    echo "------------------------------------------------"  >> "$i-console.log"
+    echo "" >> "$i-console.log"
+done
 
 echo "-----------------------------------------------------"
 #Checking all requests in the log
@@ -64,6 +84,15 @@ while [  $counter -lt $maxRequests ]; do
    then
       echo "x-correlation-id $reqIdPrefix-$counter counter $resultsCounter"  >> errors.txt
       echo "" >> errors.txt
+      #search error in each pod log
+      textToFind="$reqIdPrefix-$counter"
+      input=consumer_log_files.log
+      while IFS= read -r line
+      do
+         echo "$line"
+         grep $textToFind "$line"
+      done < "$input"
+
    fi
 done
 
