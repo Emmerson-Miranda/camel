@@ -13,6 +13,10 @@ N.B:
 
 # The microservices
 
+## cdi-k8s-pocs
+Pure Camel 3 CDI microservice tha provides kubernetes integration.
+[source code](./cdi-k8s-pocs/readme.md)
+
 ## cdi-user
 Pure Camel 3 CDI microservice tha provides dummy user information.
 
