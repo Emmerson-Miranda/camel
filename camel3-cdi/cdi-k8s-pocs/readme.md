@@ -16,6 +16,7 @@ The implementation of this POC -don't pretend to show best practices- run the Ca
 * List pods (KubernetesListJob class)
 * List jobs (KubernetesListJob class)
 * Create a job (KubernetesCreateJob class)
+* Remove a job when its POD finish based on POD events (KubernetesRouteConsumerPods class)
 
 ** REST RESOURCES **
 
