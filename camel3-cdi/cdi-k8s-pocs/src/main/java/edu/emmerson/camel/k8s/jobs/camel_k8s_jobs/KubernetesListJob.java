@@ -16,9 +16,7 @@ import io.fabric8.kubernetes.api.model.batch.Job;
  */
 public class KubernetesListJob extends RouteBuilder {
 
-    @Inject
-    @Uri("timer:foo?delay=4000&repeatCount=1")
-    private Endpoint inputEndpoint;
+	public static final String FROM = "direct:" + KubernetesListJob.class.getSimpleName();
 
     @Inject
     @Uri("log:output")
@@ -27,12 +25,13 @@ public class KubernetesListJob extends RouteBuilder {
     @Override
     public void configure() {
 
-        from(inputEndpoint)
+        from(FROM)
         	.routeId("kubernetes-joblist-client") 
         	.toF("kubernetes-job:///{{kubernetes-master-url}}?oauthToken={{kubernetes-oauth-token:}}&operation=" + KubernetesOperations.LIST_JOB)
         	.log("We currently have ${body.size()} jobs:")
         	.process(exchange -> {
-        		List<Job> jobs = exchange.getIn().getBody(List.class);
+        		@SuppressWarnings("unchecked")
+				List<Job> jobs = exchange.getIn().getBody(List.class);
         		jobs.forEach( j -> {
         			//System.out.println(j);
         			System.out.println(j.getMetadata().getName());

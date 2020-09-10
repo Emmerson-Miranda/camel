@@ -4,12 +4,8 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.apache.camel.Endpoint;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.cdi.Uri;
 import org.apache.camel.component.kubernetes.KubernetesOperations;
 
 import io.fabric8.kubernetes.api.model.ContainerStatus;
@@ -18,13 +14,11 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 
 public class KubernetesRouteListPods extends RouteBuilder {
 
-    @Inject
-    @Uri("timer:pods?delay=1000&repeatCount=1")
-    private Endpoint inputEndpoint;
-    
+	public static final String FROM = "direct:" + KubernetesRouteListPods.class.getSimpleName();
+
     @Override
     public void configure() {
-        from(inputEndpoint)
+        from(FROM)
         	.routeId("kubernetes-pods-client")
             .onException(KubernetesClientException.class).handled(true)
                 .log(LoggingLevel.ERROR, "${exception.message}")
@@ -35,7 +29,8 @@ public class KubernetesRouteListPods extends RouteBuilder {
             .to("kubernetes-pods://{{kubernetes-master-url}}?oauthToken={{kubernetes-oauth-token:}}&operation=" + KubernetesOperations.LIST_PODS_OPERATION)
             .log("We currently have ${body.size()} pods:")
             .process(exchange -> {
-                List<Pod> pods = exchange.getIn().getBody(List.class);
+                @SuppressWarnings("unchecked")
+				List<Pod> pods = exchange.getIn().getBody(List.class);
                 // Compute the length of the longer pod name
                 String tty = "%-" + (pods.stream().mapToInt(pod -> pod.getMetadata().getName().length()).max().orElse(30) + 2) + "s %-9s %-9s %-10s %s";
                 // Emulates the output of 'kubectl get pods'
