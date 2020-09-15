@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Converter(generateLoader = true)
 public class JobToByteBufferConverter {
 
-	@Converter
+    @Converter
     public static ByteBuffer toInputStream(io.fabric8.kubernetes.api.model.batch.Job  j) throws JsonProcessingException  {
 		ObjectMapper objectMapper = new ObjectMapper();
 		byte[] byteArray = objectMapper.writeValueAsBytes(j);

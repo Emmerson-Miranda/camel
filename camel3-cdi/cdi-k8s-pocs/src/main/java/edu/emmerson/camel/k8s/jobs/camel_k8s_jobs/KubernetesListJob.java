@@ -29,6 +29,7 @@ public class KubernetesListJob extends RouteBuilder {
         	.routeId("kubernetes-joblist-client") 
         	.toF("kubernetes-job:///{{kubernetes-master-url}}?oauthToken={{kubernetes-oauth-token:}}&operation=" + KubernetesOperations.LIST_JOB)
         	.log("We currently have ${body.size()} jobs:")
+        	/*
         	.process(exchange -> {
         		@SuppressWarnings("unchecked")
 				List<Job> jobs = exchange.getIn().getBody(List.class);
@@ -48,6 +49,7 @@ public class KubernetesListJob extends RouteBuilder {
         			//KubernetesConstants.KUBERNETES_JOB_SPEC;
         		});
         	})
+        	*/
             .to(resultEndpoint);
     }
 

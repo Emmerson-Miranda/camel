@@ -28,13 +28,13 @@ Create a random job
 $ curl http://localhost:8080/k8s/job -X POST
 ```
 
-List jobs in console
+List jobs in JSON format
 
 ```
 $ curl http://localhost:8080/k8s/job
 ```
 
-List pods in console
+List pods in JSON format
 
 ```
 $ curl http://localhost:8080/k8s/job

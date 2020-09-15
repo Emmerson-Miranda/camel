@@ -13,7 +13,7 @@ import io.fabric8.kubernetes.api.model.batch.Job;
 @Converter(generateLoader = true)
 public class ArrayListToByteBufferConverter {
 
-	@Converter
+    @Converter
     public static ByteBuffer toInputStream(ArrayList<Job> al) throws JsonProcessingException  {
 		ObjectMapper objectMapper = new ObjectMapper();
 		byte[] byteArray = objectMapper.writeValueAsBytes(al);

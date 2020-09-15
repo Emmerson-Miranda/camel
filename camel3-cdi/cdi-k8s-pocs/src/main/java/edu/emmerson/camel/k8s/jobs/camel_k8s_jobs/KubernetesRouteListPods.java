@@ -28,6 +28,7 @@ public class KubernetesRouteListPods extends RouteBuilder {
                 .end()
             .to("kubernetes-pods://{{kubernetes-master-url}}?oauthToken={{kubernetes-oauth-token:}}&operation=" + KubernetesOperations.LIST_PODS_OPERATION)
             .log("We currently have ${body.size()} pods:")
+            /*
             .process(exchange -> {
                 @SuppressWarnings("unchecked")
 				List<Pod> pods = exchange.getIn().getBody(List.class);
@@ -45,7 +46,9 @@ public class KubernetesRouteListPods extends RouteBuilder {
                             .mapToInt(ContainerStatus::getRestartCount).sum(),
                         formatDuration(Duration.between(ZonedDateTime.parse(pod.getStatus().getStartTime()), ZonedDateTime.now()))))
                     .forEach(System.out::println);
-            });
+            })
+            */
+            ;
     }
     
     // Let's format duration the kubectl way!
