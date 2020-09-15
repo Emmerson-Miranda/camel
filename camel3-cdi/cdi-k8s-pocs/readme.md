@@ -1,7 +1,9 @@
 Camel CDI - Kubernetes Examples
 ================================
 
-This example shows how to work with Camel CDI to configure [Kubernetes components](https://camel.apache.org/components/latest/kubernetes-summary.html "Kubernetes components").
+In this examples I will demonstrate how to create jobs on-demand (via HTTP request) to process some task in isolation and detect when  the process finish to perform clean-up tasks.
+
+To achieve this I am going to use Camel CDI to configure [Kubernetes components](https://camel.apache.org/components/latest/kubernetes-summary.html "Kubernetes components") such as Jobs and Pods.
 
 ## Configuration
 
@@ -9,9 +11,9 @@ You have to introduce master server's IP/port and OAuth token in order to connec
 
 Find out more https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/
 
-## Examples
+## Examples list
 
-The implementation of this POC -don't pretend to show best practices- run the Camel Routes few seconds after Camel starts to:
+The implementation of this POC -don't pretend to establish best practices- show how to:
 
 * List pods (KubernetesListJob class)
 * List jobs (KubernetesListJob class)
