@@ -1,4 +1,4 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.route;
 
 import java.util.LinkedHashMap;
 
@@ -8,9 +8,15 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 
+import edu.emmerson.camel3.cdi.rmq.MyIdempotentRepository;
+import edu.emmerson.camel3.cdi.rmq.controlbus.MngtConstants;
+import edu.emmerson.camel3.cdi.rmq.controlbus.MngtProducerRouteBuilder;
 import edu.emmerson.camel3.cdi.rmq.processor.AfterSendToBackendProcessor;
 import edu.emmerson.camel3.cdi.rmq.processor.BeforeSendToBackendProcessor;
 import edu.emmerson.camel3.cdi.rmq.processor.CustomErrorHandlerProcessor;
+import edu.emmerson.camel3.cdi.rmq.util.ConfigReader;
+import edu.emmerson.camel3.cdi.rmq.util.ConsumerConstants;
+import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
 
 
 /**
@@ -71,7 +77,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		from(ConfigReader.getQueueEndpoint())
 			.routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
 			.routePolicy(mrp)
-			//.idempotentConsumer(header("X-Correlation-ID"), myIdempotentRepository)
+			.idempotentConsumer(header("X-Correlation-ID"), myIdempotentRepository)
 			.to("direct:target");
 
 		//

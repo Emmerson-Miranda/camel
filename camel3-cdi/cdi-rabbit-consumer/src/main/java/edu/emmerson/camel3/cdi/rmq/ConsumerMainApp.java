@@ -3,6 +3,8 @@ package edu.emmerson.camel3.cdi.rmq;
 import org.apache.camel.api.management.JmxSystemPropertyKeys;
 import org.apache.camel.cdi.Main;
 
+import edu.emmerson.camel3.cdi.rmq.util.ConfigReader;
+
 public class ConsumerMainApp {
 	
 	/**

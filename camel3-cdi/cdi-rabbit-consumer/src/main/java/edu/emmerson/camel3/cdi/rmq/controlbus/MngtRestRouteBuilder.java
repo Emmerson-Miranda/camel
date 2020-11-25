@@ -1,9 +1,13 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.controlbus;
 
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.model.rest.RestBindingMode;
+
+import edu.emmerson.camel3.cdi.rmq.route.StatsRouteBuilder;
+import edu.emmerson.camel3.cdi.rmq.util.ConsumerConstants;
+import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
 
 
 /**

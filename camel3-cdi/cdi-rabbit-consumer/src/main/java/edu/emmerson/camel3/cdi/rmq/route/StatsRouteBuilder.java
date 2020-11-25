@@ -1,4 +1,4 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.route;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,8 @@ import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.rest.RestApiEndpoint;
 import org.apache.camel.component.rest.RestEndpoint;
+
+import edu.emmerson.camel3.cdi.rmq.util.ConsumerConstants;
 
 /**
  * 

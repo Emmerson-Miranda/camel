@@ -1,4 +1,4 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.util;
 
 public final class RouteIdGenerator {
 	

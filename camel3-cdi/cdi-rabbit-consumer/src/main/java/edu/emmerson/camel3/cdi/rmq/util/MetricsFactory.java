@@ -1,6 +1,8 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.util;
 
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
+
+import edu.emmerson.camel3.cdi.rmq.controlbus.MngtConstants;
 
 public final class MetricsFactory {
 	

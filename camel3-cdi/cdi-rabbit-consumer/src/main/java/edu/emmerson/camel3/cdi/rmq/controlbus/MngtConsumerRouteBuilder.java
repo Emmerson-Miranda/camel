@@ -1,4 +1,4 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.controlbus;
 
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -10,6 +10,9 @@ import org.apache.camel.component.rest.RestApiEndpoint;
 import org.apache.camel.component.rest.RestEndpoint;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.commons.lang3.StringUtils;
+
+import edu.emmerson.camel3.cdi.rmq.route.ConsumerRouteBuilder;
+import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
 
 /**
  * 

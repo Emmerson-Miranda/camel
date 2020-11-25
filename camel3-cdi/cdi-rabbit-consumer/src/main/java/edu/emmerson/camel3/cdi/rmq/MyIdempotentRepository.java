@@ -7,6 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.camel.support.LRUCacheFactory;
 import org.apache.camel.support.processor.idempotent.MemoryIdempotentRepository;
 
+import edu.emmerson.camel3.cdi.rmq.util.ConfigReader;
+
 @ApplicationScoped
 public class MyIdempotentRepository extends MemoryIdempotentRepository{
 	

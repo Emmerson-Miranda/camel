@@ -1,9 +1,11 @@
-package edu.emmerson.camel3.cdi.rmq;
+package edu.emmerson.camel3.cdi.rmq.route;
 
 
 import java.time.Instant;
 
 import org.apache.camel.builder.RouteBuilder;
+
+import edu.emmerson.camel3.cdi.rmq.controlbus.MngtConstants;
 
 /**
  * 
