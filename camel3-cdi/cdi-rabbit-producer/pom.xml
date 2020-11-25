@@ -8,7 +8,7 @@
 	<groupId>edu.emmerson.camel3.cdi.rmq</groupId>
 	<artifactId>cdi-rabbit-producer</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 
 	<name>Camel route using CDI in a standalone Java Container</name>
 
@@ -23,7 +23,7 @@
 			<dependency>
 				<groupId>org.apache.camel</groupId>
 				<artifactId>camel-parent</artifactId>
-				<version>3.4.0</version>
+				<version>3.6.0</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -34,27 +34,32 @@
 
 		<!-- ************************* BLOCK START ************************* -->
 
-		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-metrics</artifactId>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-management</artifactId>
-        </dependency>
 
-		<dependency>
-			<groupId>edu.emmerson.camel3.cdi.shared</groupId>
-			<artifactId>cdi-shared</artifactId>
-			<version>1.0-SNAPSHOT</version>
+
+
+		<dependency><!-- java 11 change, fix soap and jaxb -->
+			<groupId>jakarta.xml.ws</groupId>
+			<artifactId>jakarta.xml.ws-api</artifactId>
+			<version>2.3.3</version>
 		</dependency>
 
+
+
 		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-rabbitmq</artifactId>
-		</dependency>	
-		
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-metrics</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-management</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-rabbitmq</artifactId>
+		</dependency>
+
 		<!-- Undertow -->
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -93,12 +98,6 @@
 
 		<!-- ************************* BLOCK END ************************* -->
 
-		<dependency>
-			<groupId>edu.emmerson.camel3.cdi.shared</groupId>
-			<artifactId>cdi-shared</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		
 		<!-- CDI API -->
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -137,12 +136,12 @@
 			<artifactId>camel-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/io.prometheus.jmx/jmx_prometheus_javaagent -->
 		<dependency>
-		    <groupId>io.prometheus.jmx</groupId>
-		    <artifactId>jmx_prometheus_javaagent</artifactId>
-		    <version>0.12.0</version>
+			<groupId>io.prometheus.jmx</groupId>
+			<artifactId>jmx_prometheus_javaagent</artifactId>
+			<version>0.12.0</version>
 		</dependency>
 
 	</dependencies>
@@ -150,16 +149,172 @@
 	<build>
 		<defaultGoal>install</defaultGoal>
 
+
 		<plugins>
-			<plugin>
+
+			<plugin><!-- java 11 change -->
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<argLine>
+						--illegal-access=permit
+					</argLine>
 				</configuration>
 			</plugin>
+
+			<plugin><!-- java 11 change -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<argLine>
+						--illegal-access=permit
+					</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin><!-- java 11 change -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
+			</plugin>
+
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.8.1</version>
+	<configuration>
+		<release>11</release>
+	</configuration>
+	<dependencies>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>9.0</version>
+		</dependency>
+	</dependencies>
+</plugin>
+
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<version>2.22.2</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>9.0</version>
+		</dependency>
+	</dependencies>
+
+	<executions>
+		<execution>
+			<id>default-test</id>
+			<phase>test</phase>
+			<goals>
+				<goal>test</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+
+<plugin>
+	<groupId>org.jacoco</groupId>
+	<artifactId>jacoco-maven-plugin</artifactId>
+	<version>0.8.6</version>
+	<executions>
+		<execution>
+			<id>default-prepare-agent</id>
+			<goals>
+				<goal>prepare-agent</goal>
+			</goals>
+		</execution>
+		<execution>
+			<id>default-prepare-agent-integration</id>
+			<goals>
+				<goal>prepare-agent-integration</goal>
+			</goals>
+		</execution>
+		<execution>
+			<id>default-report</id>
+			<goals>
+				<goal>report</goal>
+			</goals>
+		</execution>
+		<execution>
+			<id>default-report-integration</id>
+			<goals>
+				<goal>report-integration</goal>
+			</goals>
+		</execution>
+		<execution>
+			<id>default-check</id>
+			<goals>
+				<goal>check</goal>
+			</goals>
+			<configuration>
+				<rules>
+					<rule>
+						<element>BUNDLE</element>
+						<limits>
+							<limit>
+								<counter>INSTRUCTION</counter>
+								<value>COVEREDRATIO</value>
+								<minimum>0.85</minimum>
+							</limit>
+						</limits>
+					</rule>
+				</rules>
+			</configuration>
+		</execution>
+		<execution>
+			<id>default-check-integration</id>
+			<goals>
+				<goal>check</goal>
+			</goals>
+			<configuration>
+				<dataFile>/home/u.7829669/Documents/gitlab/journey-sft-controller-service/journey-sft-controller-service-camel/target/jacoco-it.exec</dataFile>
+				<rules>
+					<rule>
+						<element>BUNDLE</element>
+						<limits>
+							<limit>
+								<counter>INSTRUCTION</counter>
+								<value>COVEREDRATIO</value>
+								<minimum>0.85</minimum>
+							</limit>
+						</limits>
+					</rule>
+				</rules>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+      
+      
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<version>3.1.2</version>
+	<executions>
+		<execution>
+			<id>copy-dependencies</id>
+			<phase>process-classes</phase>
+			<goals>
+				<goal>copy-dependencies</goal>
+			</goals>
+			<configuration>
+				<outputDirectory>${project.build.directory}/image/dependency-jars/</outputDirectory>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -223,26 +378,27 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-			    <executions>
-			        <execution>
-			            <phase>package</phase>
-			            <configuration>
-			                <target>
-			                    <echo>Copying prometheus config.xml</echo>
-			                    <copy file="prometheus/config.yaml" tofile="target/dependency-jars/config.yaml"/>
-			                </target>
-			            </configuration>
-			            <goals>
-			                <goal>run</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<echo>Copying prometheus config.xml</echo>
+								<copy file="prometheus/config.yaml"
+									tofile="target/dependency-jars/config.yaml" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 
 
@@ -257,7 +413,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
 					<imageName>${project.artifactId}</imageName>
-					<baseImage>openjdk:8u121-alpine</baseImage>
+					<baseImage>adoptopenjdk/openjdk11</baseImage>
 					<workdir>/opt/${project.artifactId}</workdir>
 					<exposes>
 						<expose>8080</expose>

@@ -25,7 +25,7 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
         StringBuilder sbConsumer = new StringBuilder();
         sbConsumer.append("rabbitmq:myTopicExhange?")
         .append("connectionFactory=#consumerConnectionFactoryService")
-        .append("&exchangeType=topic")
+        .append("&exchangeType=direct")
         .append("&routingKey=").append(ConsumerRouteBuilder.RABBITMQ_ROUTING_KEY)
         .append("&durable=false")
         .append("&autoDelete=false")

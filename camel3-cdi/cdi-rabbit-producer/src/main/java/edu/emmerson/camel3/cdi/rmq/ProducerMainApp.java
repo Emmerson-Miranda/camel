@@ -1,5 +1,7 @@
 package edu.emmerson.camel3.cdi.rmq;
 
+import org.apache.camel.cdi.Main;
+
 public class ProducerMainApp {
 	
 	/**
@@ -14,7 +16,7 @@ public class ProducerMainApp {
     	System.setProperty(ConfigReader.RABBIT_PORT, "5672");
     	System.setProperty(ConfigReader.RABBIT_HOST, "localhost");
     	
-    	edu.emmerson.camel3.cdi.shared.SharedMainApp.main(args);
+    	Main.main(args);
     }
     
 }

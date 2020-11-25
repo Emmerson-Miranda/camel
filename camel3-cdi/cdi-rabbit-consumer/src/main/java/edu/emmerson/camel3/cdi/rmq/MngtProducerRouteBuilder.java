@@ -21,7 +21,7 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
         //
         sbPub.append("rabbitmq:myTopicExhange?")
         .append("connectionFactory=#consumerConnectionFactoryService")
-        .append("&exchangeType=topic")
+        .append("&exchangeType=direct")
         .append("&routingKey=${exchangeProperty.routingKey}")
         .append("&durable=false")
         .append("&autoDelete=false")

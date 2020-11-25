@@ -24,7 +24,7 @@ public class ConsumerMainApp {
     	
     	System.setProperty(JmxSystemPropertyKeys.DISABLED, "false");
     	
-    	System.setProperty(ConfigReader.RABBIT_PORT, "25672");
+    	System.setProperty(ConfigReader.RABBIT_PORT, "5672");
     	System.setProperty(ConfigReader.RABBIT_HOST, "localhost");
     	System.setProperty(ConfigReader.RABBIT_CLIENT_SLEEP_ON_DISCONNECTION_ENABLE, "false");
     	System.setProperty(ConfigReader.DISABLE_SUSPENSION, "true");

@@ -71,7 +71,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		from(ConfigReader.getQueueEndpoint())
 			.routeId(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID)
 			.routePolicy(mrp)
-			.idempotentConsumer(header("X-Correlation-ID"), myIdempotentRepository)
+			//.idempotentConsumer(header("X-Correlation-ID"), myIdempotentRepository)
 			.to("direct:target");
 
 		//
