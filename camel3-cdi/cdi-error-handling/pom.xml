@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>edu.emmerson.camel3.cdi.rmq</groupId>
-	<artifactId>cdi-rabbit-producer</artifactId>
+	<artifactId>cdi-error-handling</artifactId>
 	<packaging>jar</packaging>
 	<version>1.2.0</version>
 
@@ -355,7 +355,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>edu.emmerson.camel3.cdi.rmq.ProducerMainApp</mainClass>
+							<mainClass>edu.emmerson.camel3.cdi.rmq.ErrorHandlingMainApp</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 					</archive>
