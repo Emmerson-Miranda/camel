@@ -5,6 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 
 import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberOnExceptionRoute;
 import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberRoute;
+import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberTryCatchRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NoErrorRoute;
 
 
@@ -39,6 +40,11 @@ public class RestRouteBuilder extends RouteBuilder {
 	        
 	        .post("/inoe").id("inoe-resource").description("Invalid number, with on exception")
 	        .to(InvalidNumberOnExceptionRoute.DIRECT)
+	        
+	        .post("/intc").id("intc-resource").description("Invalid number, with try catch")
+	        .to(InvalidNumberTryCatchRoute.DIRECT)
+	        
+	        
 	        
 	        ;
        

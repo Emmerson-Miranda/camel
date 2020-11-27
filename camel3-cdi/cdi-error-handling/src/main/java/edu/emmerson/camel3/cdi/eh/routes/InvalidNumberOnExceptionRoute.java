@@ -20,11 +20,7 @@ public class InvalidNumberOnExceptionRoute  extends RouteBuilder {
 		
         from(DIRECT)
         .routeId(ROUTE_ID)
-        .doTry()
-        	.to(InvalidNumberRoute.DIRECT)
-        .doCatch(java.lang.NumberFormatException.class)
-        	.setBody(constant(ROUTE_ID + ": Invalid number from doTry block"))
-        .endDoTry();
+        .to(InvalidNumberRoute.DIRECT);
 		
 	}
 
