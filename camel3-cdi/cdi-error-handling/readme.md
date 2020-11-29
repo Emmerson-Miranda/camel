@@ -27,9 +27,13 @@ $ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/j
 
 $ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/in
 
-$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoe
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoeto
+
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoesc
 
 
+
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/intc
 
 
 ```

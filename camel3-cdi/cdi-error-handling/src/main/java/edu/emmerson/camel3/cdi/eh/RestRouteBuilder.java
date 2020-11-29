@@ -3,10 +3,15 @@ package edu.emmerson.camel3.cdi.eh;
 
 import org.apache.camel.builder.RouteBuilder;
 
-import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberOnExceptionRoute;
-import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberRoute;
+import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionRoute;
+import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionToRoute;
+import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionToTryCatchRoute;
+import edu.emmerson.camel3.cdi.eh.routes.ErrorRoute;
+import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberOnExceptionToRoute;
+import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberRouteOnExceptionSelfContainedRoute;
 import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberTryCatchRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NoErrorRoute;
+import edu.emmerson.camel3.cdi.eh.routes.NumberRoute;
 
 
 public class RestRouteBuilder extends RouteBuilder {
@@ -36,15 +41,28 @@ public class RestRouteBuilder extends RouteBuilder {
             .to(NoErrorRoute.DIRECT)
 
 	        .post("/in").id("in-resource").description("Invalid number, without error handling")
-	        .to(InvalidNumberRoute.DIRECT)
+	        .to(NumberRoute.DIRECT)
 	        
-	        .post("/inoe").id("inoe-resource").description("Invalid number, with on exception")
-	        .to(InvalidNumberOnExceptionRoute.DIRECT)
+	        .post("/inoeto").id("inoe-resource").description("Invalid number, with on exception")
+	        .to(InvalidNumberOnExceptionToRoute.DIRECT)
+	        
+	        .post("/inoesc").id("inoesc-resource").description("Invalid number Self Contained, with on exception")
+	        .to(InvalidNumberRouteOnExceptionSelfContainedRoute.DIRECT)
 	        
 	        .post("/intc").id("intc-resource").description("Invalid number, with try catch")
 	        .to(InvalidNumberTryCatchRoute.DIRECT)
 	        
+	        .post("/te").id("intc-resource").description("Throw a Exception without error handling")
+	        .to(ErrorRoute.DIRECT)
 	        
+	        .post("/teoe").id("intc-resource").description("Implementation Throw a Exception and is handled by onException")
+	        .to(ErrorOnExceptionRoute.DIRECT)
+	        
+	        .post("/teoet").id("intc-resource").description("Call a route that throw an exception and handle it with caller onException, in thi case onException is ignored.")
+	        .to(ErrorOnExceptionToRoute.DIRECT)
+	        
+	        .post("/teoetc").id("intc-resource").description("Call a route that throw an exception and handle it with caller try/catch, in this case try/catch works.")
+	        .to(ErrorOnExceptionToTryCatchRoute.DIRECT)
 	        
 	        ;
        

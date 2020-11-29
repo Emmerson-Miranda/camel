@@ -11,20 +11,15 @@ public class InvalidNumberTryCatchRoute  extends RouteBuilder {
 	
 	@Override
 	public void configure() throws Exception {
-		
-    	onException(Throwable.class)
-    	.handled(true)
-		.log("onException:: ${header.X-Correlation-ID} :: ${exception.message} :: ${exception}")
-		.setBody(constant("Error handling by " + ROUTE_ID))
-		;
-		
         from(DIRECT)
         .routeId(ROUTE_ID)
+        .log("Route Start :: ${exchangeId} :: ${routeId}")
         .doTry()
-        	.to(InvalidNumberRoute.DIRECT)
+        	.to(NumberRoute.DIRECT)
         .doCatch(java.lang.NumberFormatException.class)
         	.setBody(constant(ROUTE_ID + ": Invalid number from doTry block"))
-        .endDoTry();
+        .endDoTry()
+        .log("Route End :: ${exchangeId} :: ${routeId}");
 		
 	}
 
