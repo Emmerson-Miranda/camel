@@ -88,11 +88,15 @@ CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Happy path
 $ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbh
 ```
 
-CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Timeout exception
+CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Timeout exception handled by second onException block.
 
 ```
 $ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 3000"  -X POST http://0.0.0.0:8080/eh/chbh
 ```
 
+CallHttpBackendHttpRoute Call backend HTTP with an invalid number - The first onException block will catch the error.
 
+```
+curl -d "{\"value\": \"efdw1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbh
+```
 

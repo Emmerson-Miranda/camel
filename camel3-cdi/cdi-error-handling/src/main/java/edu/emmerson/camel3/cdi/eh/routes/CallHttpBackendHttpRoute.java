@@ -31,7 +31,7 @@ public class CallHttpBackendHttpRoute  extends RouteBuilder {
         from(DIRECT)
         .routeId(ROUTE_ID)
         .log("Route Start :: ${exchangeId} :: ${routeId}")
-        .setHeader(Exchange.HTTP_URI, constant("http://0.0.0.0:8080/eh/noerror"))
+        .setHeader(Exchange.HTTP_URI, constant("http://0.0.0.0:8080/eh/in"))
         .to("http://oldhost/?socketTimeout=2000")
         .log("Route End :: ${exchangeId} :: ${routeId}")
         ;

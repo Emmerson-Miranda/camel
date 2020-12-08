@@ -15,7 +15,7 @@ public class CallHttpBackendUndertowRoute  extends RouteBuilder {
         from(DIRECT)
         .routeId(ROUTE_ID)
         .log("Route Start :: ${exchangeId} :: ${routeId}")
-        .toD("undertow:http://0.0.0.0:8080/eh/noerror?exchangePattern=InOut")
+        .toD("undertow:http://0.0.0.0:8080/eh/in?exchangePattern=InOut")
         .log("Route End :: ${exchangeId} :: ${routeId}")
         ;
 		

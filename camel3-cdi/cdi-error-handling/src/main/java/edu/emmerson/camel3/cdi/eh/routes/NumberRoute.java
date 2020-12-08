@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.emmerson.camel3.cdi.eh.EHPojo;
 
@@ -20,15 +21,26 @@ public class NumberRoute  extends RouteBuilder {
         .routeId(ROUTE_ID)
         .log("Route Start :: ${exchangeId} :: ${routeId}")
         .unmarshal().json(JsonLibrary.Jackson)
-        .process( exchange -> {
+        .process( e -> {
         	@SuppressWarnings("unchecked")
-			LinkedHashMap<String, String> o = exchange.getIn().getBody(LinkedHashMap.class);
+			LinkedHashMap<String, String> o = e.getIn().getBody(LinkedHashMap.class);
         	String val = o.get("value");
         	Integer i = Integer.valueOf(val);
         	
-        	EHPojo p = new EHPojo(i.intValue(), ROUTE_ID +  " Integer succesfully read (FromRouteId: " + exchange.getFromRouteId() + ").");
+        	EHPojo p = new EHPojo(i.intValue(), ROUTE_ID +  " Integer succesfully read (FromRouteId: " + e.getFromRouteId() + ").");
         	
-        	exchange.getIn().setBody(p);
+        	
+        	String xsleep = e.getIn().getHeader("x-sleep", String.class) ;
+        	long sleep = 0;
+        	try{
+        		sleep = StringUtils.isEmpty(xsleep) ? 0 : Long.parseLong(xsleep);
+        	} catch (NumberFormatException nfe) {
+        		System.out.println(nfe.getMessage());
+        	}
+        	System.out.println("Sleeping miliseconds: " + sleep);
+        	Thread.sleep(sleep);
+        	
+        	e.getIn().setBody(p);
         })
         .marshal().json(JsonLibrary.Jackson)
         .log("Route End :: ${exchangeId} :: ${routeId}")
