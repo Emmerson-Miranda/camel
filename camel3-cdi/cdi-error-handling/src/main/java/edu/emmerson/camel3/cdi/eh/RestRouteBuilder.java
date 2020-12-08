@@ -3,6 +3,8 @@ package edu.emmerson.camel3.cdi.eh;
 
 import org.apache.camel.builder.RouteBuilder;
 
+import edu.emmerson.camel3.cdi.eh.routes.CallHttpBackendHttpRoute;
+import edu.emmerson.camel3.cdi.eh.routes.CallHttpBackendUndertowRoute;
 import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionRoute;
 import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionToRoute;
 import edu.emmerson.camel3.cdi.eh.routes.ErrorOnExceptionToTryCatchRoute;
@@ -63,6 +65,12 @@ public class RestRouteBuilder extends RouteBuilder {
 	        
 	        .post("/teoetc").id("intc-resource").description("Call a route that throw an exception and handle it with caller try/catch, in this case try/catch works.")
 	        .to(ErrorOnExceptionToTryCatchRoute.DIRECT)
+	        
+	        .post("/chbu").id("chbu-resource").description("Call backend HTTP using Undertow component")
+	        .to(CallHttpBackendUndertowRoute.DIRECT)
+	        
+	        .post("/chbh").id("chbh-resource").description("Call backend HTTP using HTTP component")
+	        .to(CallHttpBackendHttpRoute.DIRECT)
 	        
 	        ;
        

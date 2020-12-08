@@ -66,6 +66,14 @@
 			<artifactId>camel-undertow</artifactId>
 		</dependency>
 
+
+		<!-- HTTP -->
+		<dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-http</artifactId>
+		</dependency>
+
+
 		<!-- Stream -->
 		<dependency>
 			<groupId>org.apache.camel</groupId>

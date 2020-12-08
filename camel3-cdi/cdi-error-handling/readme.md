@@ -4,37 +4,100 @@
 This example expose some REST interfaces and show some error handling scenarios
 
 
-## RabbitMQ
-More info at: https://hub.docker.com/_/rabbitmq
-
-To start RabbitMQ server run;
-
-```
-docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 -p 5672:5672  rabbitmq:3-management
-```
-
 
 ## Testing 
 
-Run following commands drop a message in RabbitMQ, the headers will specify how the consumer is going to behave:
+
+
+NoErrorRoute Happy path.
 
 ```
-
-Run following commands drop a message in RabbitMQ, the headers will specify how the consumer is going to behave:
-
 $ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/noerror
+```
 
-
-$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/in
-
-$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoeto
-
-$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoesc
-
-
-
-$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/intc
-
+NoErrorRoute Happy path with Thread sleep.
 
 ```
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "x-sleep: 3000" -X POST http://0.0.0.0:8080/eh/noerror
+```
+
+NumberRoute - Happy path -  without error handling.
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/in
+```
+
+NumberRoute - Value NumberFormatException - NumberRoute without error handling.
+
+```
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/in
+```
+
+InvalidNumberOnExceptionToRoute call a route that raise an exception, onException does not catch the error raise in the called route.
+
+```
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoeto
+```
+
+InvalidNumberRouteOnExceptionSelfContainedRoute has onException in the route, it catch the error.
+
+```
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/inoesc
+```
+
+InvalidNumberTryCatchRoute call another route that does not have onException but try catch block.
+
+```
+$ curl -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/intc
+```
+
+ErrorRoute always raise an exception.
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/te
+```
+
+ErrorOnExceptionRoute Implementation Throw a Exception and is handled by onException
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/teoe
+```
+
+ErrorOnExceptionToRoute Call a route that throw an exception and handle it with caller onException, in this case onException is ignored.
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/teoet
+```
+
+ErrorOnExceptionToTryCatchRoute Call a route that throw an exception and handle it with caller try/catch, in this case try/catch works."
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/teoetc
+```
+
+CallHttpBackendRoute Call backend HTTP
+
+```
+$ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -X POST http://0.0.0.0:8080/eh/chb
+```
+
+CallHttpBackendUndertowRoute Call backend HTTP with thread sleep
+
+```
+curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5"  -H "x-sleep: 3000"  -X POST http://0.0.0.0:8080/eh/chbu
+```
+
+CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Happy path
+
+```
+curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5"  -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbh
+```
+
+CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Timeout exception
+
+```
+curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5"  -H "x-sleep: 3000"  -X POST http://0.0.0.0:8080/eh/chbh
+```
+
+
 
