@@ -17,6 +17,8 @@ public class NumberRoute  extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		
+		errorHandler(noErrorHandler()); //if you don't do this the exception is not going to be catch by the caller route
+		
         from(DIRECT)
         .routeId(ROUTE_ID)
         .log("Route Start :: ${exchangeId} :: ${routeId}")

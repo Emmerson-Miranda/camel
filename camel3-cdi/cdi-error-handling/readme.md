@@ -82,6 +82,19 @@ CallHttpBackendUndertowRoute Call backend HTTP with thread sleep
 $ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 3000"  -X POST http://0.0.0.0:8080/eh/chbu
 ```
 
+
+curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 4000"  -X POST http://0.0.0.0:8080/eh/chbu
+
+
+
+curl -d "{\"value\": \"wwww1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbu
+
+
+
+
+
+
+
 CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Happy path
 
 ```
