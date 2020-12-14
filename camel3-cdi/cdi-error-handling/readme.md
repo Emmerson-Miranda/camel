@@ -113,3 +113,28 @@ CallHttpBackendHttpRoute Call backend HTTP with an invalid number - The first on
 curl -d "{\"value\": \"efdw1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbh
 ```
 
+### ValidationRoute
+
+Validation is fine
+
+```
+curl -d "@src/main/resources/schemas/PublicationCatalogue/Catalogue.xml" -H "Content-Type: application/xml" -H "x-schema: PublicationCatalogue/Catalogue.xsd"  -X POST http://0.0.0.0:8080/eh/schema/xml
+```
+
+Validation fails because the schema given does not exist
+
+```
+curl -d "@src/main/resources/schemas/PublicationCatalogue/Catalogue.xml" -H "Content-Type: application/xml" -H "x-schema: unknown.xsd"  -X POST http://0.0.0.0:8080/eh/schema/xml
+```
+
+Validation fails because mandatory element is missing
+
+```
+curl -d "@src/main/resources/schemas/PublicationCatalogue/InvalidCatalogue.xml" -H "Content-Type: application/xml" -H "x-schema: PublicationCatalogue/Catalogue.xsd"  -X POST http://0.0.0.0:8080/eh/schema/xml
+```
+
+Validation fails because element does not exist in the schema
+
+```
+curl -d "@src/main/resources/schemas/PublicationCatalogue/CatalogueWithoutMandatory.xml" -H "Content-Type: application/xml" -H "x-schema: PublicationCatalogue/Catalogue.xsd"  -X POST http://0.0.0.0:8080/eh/schema/xml
+```

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c:Catalogue xmlns:c="http://www.eclipse.org/webtools/Catalogue" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eclipse.org/webtools/Catalogue Catalogue.xsd ">
+	<c:Book>
+		<title>Professional XML Schema</title>
+		<date>2001</date>
+		<isbn>1-861005-47-4</isbn>
+		<publisher>Wrox Press</publisher>
+		<price>11.99</price>
+	</c:Book>
+</c:Catalogue>

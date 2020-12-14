@@ -14,6 +14,7 @@ import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberRouteOnExceptionSelfContai
 import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberTryCatchRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NoErrorRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NumberRoute;
+import edu.emmerson.camel3.cdi.eh.routes.xml.ValidationRoute;
 
 
 public class RestRouteBuilder extends RouteBuilder {
@@ -71,6 +72,10 @@ public class RestRouteBuilder extends RouteBuilder {
 	        
 	        .post("/chbh").id("chbh-resource").description("Call backend HTTP using HTTP component")
 	        .to(CallHttpBackendHttpRoute.DIRECT)
+	        
+	        .post("/schema/xml").id("sxc-resource").description("Call schema validation")
+	        .to(ValidationRoute.DIRECT)
+	        
 	        
 	        ;
        
