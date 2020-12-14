@@ -2,6 +2,7 @@ package edu.emmerson.camel3.cdi.eh.routes.xml;
 
 import java.io.File;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 
 /**
@@ -22,6 +23,7 @@ public class XmlValidationRoute extends RouteBuilder {
 		onException(org.apache.camel.support.processor.validation.SchemaValidationException.class)
 			.handled(true)
 			.log("Route onException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(403))
 			.transform()
 				.constant("Validation Error handling by " + ROUTE_ID);
 		;
@@ -29,6 +31,7 @@ public class XmlValidationRoute extends RouteBuilder {
 		onException(org.apache.camel.FailedToCreateProducerException.class)
 			.handled(true)
 			.log("Route onException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(403))
 			.transform()
 				.constant("FailedToCreateProducerException Error handling by " + ROUTE_ID);
 		;

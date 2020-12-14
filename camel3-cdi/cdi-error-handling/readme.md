@@ -76,23 +76,20 @@ $ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json"  -X POST http
 ```
 
 
-CallHttpBackendUndertowRoute Call backend HTTP with thread sleep
+CallHttpBackendUndertowRoute Call backend HTTP with thread sleep - Bigger than timeout limit
 
 ```
 $ curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 3000"  -X POST http://0.0.0.0:8080/eh/chbu
 ```
 
 
-curl -d "{\"value\": \"1\"}" -H "Content-Type: application/json" -H "x-sleep: 4000"  -X POST http://0.0.0.0:8080/eh/chbu
 
+CallHttpBackendUndertowRoute Call backend HTTP with thread sleep - Lower than timeout limit
 
-
+```
 curl -d "{\"value\": \"wwww1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbu
 
-
-
-
-
+```
 
 
 CallHttpBackendHttpRoute Call backend HTTP with thread sleep - Happy path

@@ -2,11 +2,12 @@ package edu.emmerson.camel3.cdi.eh.routes.json;
 
 import java.io.File;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 
 /**
  * 
- * @see https://camel.apache.org/components/latest/validator-component.html
+ * @see https://camel.apache.org/components/latest/json-validator-component.html
  * @author emmersonmiranda
  *
  */
@@ -20,15 +21,17 @@ public class JsonValidationRoute extends RouteBuilder {
 	public void configure() throws Exception {
 
 		onException(com.networknt.schema.JsonSchemaException.class)
-		.handled(true)
-		.log("Route JsonSchemaException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
-		.transform()
-			.constant("Invalid schema definition handling by " + ROUTE_ID);
+			.handled(true)
+			.log("Route JsonSchemaException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(403))
+			.transform()
+				.constant("Invalid schema definition handling by " + ROUTE_ID);
 		;
 	
 		onException(org.apache.camel.component.jsonvalidator.JsonValidationException.class)
 			.handled(true)
 			.log("Route onException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(403))
 			.transform()
 				.constant("Validation Error handling by " + ROUTE_ID);
 		;
@@ -36,6 +39,7 @@ public class JsonValidationRoute extends RouteBuilder {
 		onException(java.io.FileNotFoundException.class)
 			.handled(true)
 			.log("Route onException :: ${exchangeId} :: ${routeId} :: ${exception.message} ")
+			.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(403))
 			.transform()
 				.constant("FileNotFoundException Error handling by " + ROUTE_ID);
 		;
