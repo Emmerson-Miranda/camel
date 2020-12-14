@@ -113,7 +113,7 @@ CallHttpBackendHttpRoute Call backend HTTP with an invalid number - The first on
 curl -d "{\"value\": \"efdw1\"}" -H "Content-Type: application/json" -H "x-sleep: 1000"  -X POST http://0.0.0.0:8080/eh/chbh
 ```
 
-### ValidationRoute
+### XML Validation Route
 
 Validation is fine
 
@@ -137,4 +137,25 @@ Validation fails because element does not exist in the schema
 
 ```
 curl -d "@src/main/resources/schemas/PublicationCatalogue/CatalogueWithoutMandatory.xml" -H "Content-Type: application/xml" -H "x-schema: PublicationCatalogue/Catalogue.xsd"  -X POST http://0.0.0.0:8080/eh/schema/xml
+```
+
+
+### JSON Validation Route
+
+Validation is fine
+
+```
+curl -d "@src/main/resources/schemas/myjsonschema/myjsonexample.json" -H "Content-Type: application/json" -H "x-schema: myjsonschema/myjsonschema.json"  -X POST http://0.0.0.0:8080/eh/schema/json
+```
+
+Missing required attributes
+
+```
+curl -d "@src/main/resources/schemas/myjsonschema/myjsonexampleWithoutRequired.json" -H "Content-Type: application/json" -H "x-schema: myjsonschema/myjsonschema.json"  -X POST http://0.0.0.0:8080/eh/schema/json
+```
+
+Schema does not exist
+
+```
+curl -d "@src/main/resources/schemas/myjsonschema/myjsonexample.json" -H "Content-Type: application/json" -H "x-schema: unknown.json"  -X POST http://0.0.0.0:8080/eh/schema/json
 ```
