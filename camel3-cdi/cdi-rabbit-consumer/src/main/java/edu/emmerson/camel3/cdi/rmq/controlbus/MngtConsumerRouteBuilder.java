@@ -48,7 +48,7 @@ public class MngtConsumerRouteBuilder extends RouteBuilder {
         //
         //consuming management messages
         //
-        from(getQueueEndpoint())
+        from(getQueueEndpoint()).autoStartup(false) //TODO: enable
 	        .routeId(MngtConstants.MNGT_CONSUMER_RABBITMQ_ROUTE_ID)
 	        .routePolicy(mrp)
 		    .to(MngtConstants.MNGT_CONSUMER_DIRECT_ENDPOINT);

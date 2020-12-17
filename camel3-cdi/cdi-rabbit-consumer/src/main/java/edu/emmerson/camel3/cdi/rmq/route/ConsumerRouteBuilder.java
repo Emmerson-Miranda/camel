@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
@@ -18,6 +19,8 @@ import edu.emmerson.camel3.cdi.rmq.util.ConfigReader;
 import edu.emmerson.camel3.cdi.rmq.util.ConsumerConstants;
 import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
 
+import static org.apache.camel.component.http.HttpMethods.POST;
+import static org.apache.camel.Exchange.HTTP_METHOD;
 
 /**
  * 
@@ -88,13 +91,13 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 			.log("Message to send: ${header.X-Correlation-ID}")
 			//start processing the message
 			.choice()
-				.when(header("test-scenario").isEqualTo("ko")).process((m) -> {
-					throw new Exception("Some error happen!");
-				})
+				.when(header("test-scenario").isEqualTo("ko"))
+					.throwException(new Exception("Some error happen!"))
 			.end()
 			//before deliver to backend/upstream
 			.process(new BeforeSendToBackendProcessor())
 			//delivering to backend/upstream
+			.setHeader(HTTP_METHOD, constant(POST))
 			.to(ConfigReader.getUpstreamEndpoint())
 			//just after deliver
 			.process(new AfterSendToBackendProcessor())

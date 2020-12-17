@@ -51,7 +51,7 @@ public class MngtProducerRouteBuilder extends RouteBuilder {
 
         String id = MngtConstants.MNGT_PRODUCER_DIRECT_ROUTE_ID;
         
-		from(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT)
+		from(MngtConstants.MNGT_PRODUCER_DIRECT_ENDPOINT).autoStartup(false) //TODO: enable
         .routeId(id)
         .process().message(m -> {
         	m.setHeader("custom.messageId", UUID.randomUUID().toString());

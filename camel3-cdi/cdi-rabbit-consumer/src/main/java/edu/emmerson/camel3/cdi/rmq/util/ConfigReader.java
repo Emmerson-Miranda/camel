@@ -16,7 +16,7 @@ public class ConfigReader {
 
 	public static final String RABBIT_PORT = "RABBIT_PORT";
 	
-	public static final String DEFAULT_UPSTREAM_CS = "undertow:http://upstream:10003/microservice/myservice?httpMethodRestrict=POST&exchangePattern=InOut";
+	public static final String DEFAULT_UPSTREAM_CS = "http://upstream:10003/microservice/myservice";
 
 	public static final String CAMEL_MAXIMUM_REDELIVERIES = "CAMEL_MAXIMUM_REDELIVERIES";
 
