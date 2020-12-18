@@ -2,6 +2,9 @@ package edu.emmerson.camel3.cdi.rmq.util;
 
 public interface ConsumerConstants {
 	
+	String PRODUCER_DIRECT_ROUTE_ID = RouteIdGenerator.newRouteId("mymscode", "producer", RouteIdGenerator.RouteType.CAMEL_DIRECT);
+	
+
 	String CONSUMER_RABBITMQ_ROUTE_ID = RouteIdGenerator.newRouteId("mymscode", "myqueueName", RouteIdGenerator.RouteType.AMQP_CONSUMER);
 	String CONSUMER_DIRECT_ROUTE_ID = RouteIdGenerator.newRouteId("mymscode", "myqueueName", RouteIdGenerator.RouteType.CAMEL_DIRECT);
 	

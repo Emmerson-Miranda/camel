@@ -15,6 +15,29 @@ docker run -d -p 15672:15672 -p 5672:5672 --hostname my-rabbit --name some-rabbi
 
 ## Testing
 
+Publish instructing mock server respond 200
+
+```
+$ curl -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:9090/rmq/publish
+```
+
+Pay attention in below image, without filter the camel headers will end up in rabbitmq and cause troubles in the consumer if it uses HTTP component.
+![Message on RabbitMQ](messageOnRMQ.png "Message on RabbitMQ")  
+
+
+
+Publish instructing mock server respond 400
+
+```
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 400" -X POST http://0.0.0.0:9090/rmq/publish
+```
+
+Publish instructing mock server respond 500
+
+```
+$ curl -d "{"ok": "value without error"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 500" -X POST http://0.0.0.0:9090/rmq/publish
+```
+
 Stop consuming messages from queue
 
 ```

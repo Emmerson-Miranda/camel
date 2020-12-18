@@ -21,6 +21,7 @@ import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
 
 import static org.apache.camel.component.http.HttpMethods.POST;
 import static org.apache.camel.Exchange.HTTP_METHOD;
+import static org.apache.camel.Exchange.HTTP_URI;
 
 /**
  * 
@@ -88,7 +89,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		//
 		from("direct:target")
 			.routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
-			.log("Message to send: ${header.X-Correlation-ID}")
+			.log("Message to send to upstream: ${header.X-Correlation-ID}")
 			//start processing the message
 			.choice()
 				.when(header("test-scenario").isEqualTo("ko"))
@@ -98,7 +99,8 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 			.process(new BeforeSendToBackendProcessor())
 			//delivering to backend/upstream
 			.setHeader(HTTP_METHOD, constant(POST))
-			.to(ConfigReader.getUpstreamEndpoint())
+			.setHeader(HTTP_URI, constant(ConfigReader.getUpstreamEndpoint()))
+			.to("http://oldhost?socketTimeout=2000")
 			//just after deliver
 			.process(new AfterSendToBackendProcessor())
 			.log("Message sended: ${header.X-Correlation-ID}")
