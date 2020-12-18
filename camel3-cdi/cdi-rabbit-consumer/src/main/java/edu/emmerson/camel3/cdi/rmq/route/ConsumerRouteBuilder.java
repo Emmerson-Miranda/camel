@@ -1,10 +1,13 @@
 package edu.emmerson.camel3.cdi.rmq.route;
 
+import static org.apache.camel.Exchange.HTTP_METHOD;
+import static org.apache.camel.Exchange.HTTP_URI;
+import static org.apache.camel.component.http.HttpMethods.POST;
+
 import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
-import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
@@ -18,10 +21,6 @@ import edu.emmerson.camel3.cdi.rmq.processor.CustomErrorHandlerProcessor;
 import edu.emmerson.camel3.cdi.rmq.util.ConfigReader;
 import edu.emmerson.camel3.cdi.rmq.util.ConsumerConstants;
 import edu.emmerson.camel3.cdi.rmq.util.MetricsFactory;
-
-import static org.apache.camel.component.http.HttpMethods.POST;
-import static org.apache.camel.Exchange.HTTP_METHOD;
-import static org.apache.camel.Exchange.HTTP_URI;
 
 /**
  * 
@@ -72,6 +71,19 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 				.otherwise()
 					.log("Stop consumers disabled by DISABLE_SUSPENSION environment variable.")
 			.end();
+		
+		/*
+		 * https://camel.apache.org/components/latest/rabbitmq-component.html
+		 CamelRabbitmqRequeue
+		  	
+			This is used by the consumer to control rejection of the message.
+			 When the consumer is complete processing the exchange, and if the exchange failed, 
+			 then the consumer is going to reject the message from the RabbitMQ broker. 
+			 The value of this header controls this behavior. 
+			 
+			 If the value is false (by default) then the message is discarded/dead-lettered. 
+			 If the value is true, then the message is re-queued.
+		 * */
 
 		MetricsRoutePolicy mrp = MetricsFactory.createMetricsRoutePolicy(ConsumerConstants.CONSUMER_RABBITMQ_ROUTE_ID);
 
