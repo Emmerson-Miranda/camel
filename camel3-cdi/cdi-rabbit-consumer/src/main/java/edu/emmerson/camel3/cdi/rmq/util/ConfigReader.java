@@ -54,6 +54,15 @@ public class ConfigReader {
 	 * Throttle the number of messages to deliver to the upstream.
 	 * @return
 	 */
+	public static long getShutdownTimeout() {
+		String pts = getEnvVar("SHUTDOWN_TIMEOUT", "20"); //by default 20 seconds 
+		return Long.parseLong(pts);
+	}
+	
+	/**
+	 * Throttle the number of messages to deliver to the upstream.
+	 * @return
+	 */
 	public static long getDeliveryThrottle() {
 		String pts = getEnvVar("DELIVERY_THROTTLE", "2"); //by default 2 messages
 		return Long.parseLong(pts);
