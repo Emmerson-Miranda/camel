@@ -3,6 +3,14 @@
 
 This example get messages from RabbitMQ.
 
+Features:
+* Consume messages from RabbitMQ
+* Use idempotent consumer to avoid deliver the same message more than once
+* Apply throttle when deliver messages to upstream
+* Stop RabbitMQ message consumption on failures (very simple circuit breaker)
+* Hook to VM to enable graceful shutdown of camel routes
+* Export Prometheus metrics
+
 
 ## RabbitMQ
 More info at: https://hub.docker.com/_/rabbitmq
