@@ -41,6 +41,7 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 		boolean disableSuspension = ConfigReader.isDisableSuspensionEnabled();
 		int maximumRedeliveries = ConfigReader.getCamelMaximumRedeliveries(); 
 		int redeliveryDelay = ConfigReader.getCamelRedeliveryDelay();
+		long deliveryThrottle = ConfigReader.getDeliveryThrottle();
 		
 		//
 		// error handling
@@ -97,11 +98,15 @@ public class ConsumerRouteBuilder extends RouteBuilder {
 			.to("direct:target");
 
 		//
+		
+		
+		
 		// processing message
 		//
 		from("direct:target")
 			.routeId(ConsumerConstants.CONSUMER_DIRECT_ROUTE_ID)
 			.log("Message to send to upstream: ${header.X-Correlation-ID}")
+			.throttle(deliveryThrottle)
 			//start processing the message
 			.choice()
 				.when(header("test-scenario").isEqualTo("ko"))

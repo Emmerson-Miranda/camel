@@ -16,7 +16,7 @@ public class ConfigReader {
 
 	public static final String RABBIT_PORT = "RABBIT_PORT";
 	
-	public static final String DEFAULT_UPSTREAM_CS = "http://upstream:10003/microservice/myservice";
+	public static final String DEFAULT_UPSTREAM_CS = "http://localhost:10003/microservice/myservice"; //"http://upstream:10003/microservice/myservice"
 
 	public static final String CAMEL_MAXIMUM_REDELIVERIES = "CAMEL_MAXIMUM_REDELIVERIES";
 
@@ -50,6 +50,15 @@ public class ConfigReader {
 		return getEnvVar("RMQ_CONSUMER_QUEUE_CS", sbConsumer.toString());
 	}
 
+	/**
+	 * Throttle the number of messages to deliver to the upstream.
+	 * @return
+	 */
+	public static long getDeliveryThrottle() {
+		String pts = getEnvVar("DELIVERY_THROTTLE", "2"); //by default 2 messages
+		return Long.parseLong(pts);
+	}
+	
 	public static long getProcessTimeSimulationMs() {
 		String pts = getEnvVar("PROCESS_TIME_SIMULATION_MS", "300");
 		return Long.parseLong(pts);

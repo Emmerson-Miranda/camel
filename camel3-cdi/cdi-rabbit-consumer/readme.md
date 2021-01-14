@@ -10,6 +10,8 @@ More info at: https://hub.docker.com/_/rabbitmq
 To start RabbitMQ server run;
 
 ```
+docker run -d -p 10003:10003 --name upstream-mock emmerson/upstream:mock
+
 docker run -d -p 15672:15672 -p 5672:5672 --hostname my-rabbit --name some-rabbit rabbitmq:3-management
 ```
 
@@ -19,6 +21,10 @@ Publish instructing mock server respond 200
 
 ```
 $ curl -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID5" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:9090/rmq/publish
+
+
+
+for COUNTER in {1..120}; do; curl -d "{\"ok\": \"value without error\"}" -H "Content-Type: application/json" -H "X-Correlation-ID: myCustomXCID$COUNTER" -H "test-scenario: ok" -H "X-US-SCENARIO: 200" -X POST http://0.0.0.0:9090/rmq/publish; done;
 ```
 
 Pay attention in below image, without filter the camel headers will end up in rabbitmq and cause troubles in the consumer if it uses HTTP component.
