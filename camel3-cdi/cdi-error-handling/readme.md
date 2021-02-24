@@ -4,10 +4,42 @@
 This example expose some REST interfaces and show some error handling scenarios
 
 
+## Kubernetes deployment
+
+ ```
+$ kubectl apply -f kubernetes-deployment.yaml
+```
+
+If you want integrate your microservice with Prometheus please modify following annotations accordingly: 
+
+ ```
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/"
+    prometheus.io/port: "8888"
+ ```
+ 
 
 ## Testing 
 
+### Load testing
 
+ ```
+sudo apt-get update
+
+sudo apt-get -y install apache2-utils
+
+ab -n 1000 -c 100 -p payloads/NoErrorRoute_happy_path.json -T application/json http://0.0.0.0:8080/eh/noerror
+ ```
+ 
+After run some tests, from Prometheus console you can see some of the metrics exposed by camel.
+
+<img src="./images/prometheus_camel_5minrate.png" alt="5 Minutes rate" width="50%"/>
+
+<img src="./images/prometheus_camel_count.png" alt="Request counter" width="50%"/>
+
+
+### Generic testing
 
 NoErrorRoute Happy path.
 
