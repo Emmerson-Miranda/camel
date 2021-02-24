@@ -2,6 +2,7 @@ package edu.emmerson.camel3.cdi.eh;
 
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.metrics.routepolicy.MetricsRoutePolicy;
 
 import edu.emmerson.camel3.cdi.eh.routes.CallHttpBackendHttpRoute;
 import edu.emmerson.camel3.cdi.eh.routes.CallHttpBackendUndertowRoute;
@@ -38,46 +39,97 @@ public class RestRouteBuilder extends RouteBuilder {
                 // and enable CORS
                 .apiProperty("cors", "true");
 
+        MetricsRoutePolicy mrpNoErrorRoute = MetricsFactory.createMetricsRoutePolicy(NoErrorRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpNumberRoute = MetricsFactory.createMetricsRoutePolicy(NumberRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpInvalidNumberOnExceptionToRoute = MetricsFactory.createMetricsRoutePolicy(InvalidNumberOnExceptionToRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpInvalidNumberRouteOnExceptionSelfContainedRoute = MetricsFactory.createMetricsRoutePolicy(InvalidNumberRouteOnExceptionSelfContainedRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpInvalidNumberTryCatchRoute = MetricsFactory.createMetricsRoutePolicy(InvalidNumberTryCatchRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpErrorRoute = MetricsFactory.createMetricsRoutePolicy(ErrorRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpErrorOnExceptionRoute = MetricsFactory.createMetricsRoutePolicy(ErrorOnExceptionRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpErrorOnExceptionToRoute = MetricsFactory.createMetricsRoutePolicy(ErrorOnExceptionToRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpErrorOnExceptionToTryCatchRoute = MetricsFactory.createMetricsRoutePolicy(ErrorOnExceptionToTryCatchRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpCallHttpBackendUndertowRoute = MetricsFactory.createMetricsRoutePolicy(CallHttpBackendUndertowRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpCallHttpBackendHttpRoute = MetricsFactory.createMetricsRoutePolicy(CallHttpBackendHttpRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpXmlValidationRoute = MetricsFactory.createMetricsRoutePolicy(XmlValidationRoute.ROUTE_ID);
+        MetricsRoutePolicy mrpJsonValidationRoute = MetricsFactory.createMetricsRoutePolicy(JsonValidationRoute.ROUTE_ID);
+
+        
         rest("/eh").id("http-endpoint").description("Error Handling rest service")
             .consumes("application/json").produces("application/json")
-
             .post("/noerror").id("noerror-resource").description("Happy path")
-            .to(NoErrorRoute.DIRECT)
+            .route().routePolicy(mrpNoErrorRoute)
+            .to(NoErrorRoute.DIRECT);
 
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        	.consumes("application/json").produces("application/json")
 	        .post("/in").id("in-resource").description("Invalid number, without error handling")
-	        .to(NumberRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpNumberRoute)
+	        .to(NumberRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/inoeto").id("inoe-resource").description("Invalid number, with on exception")
-	        .to(InvalidNumberOnExceptionToRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpInvalidNumberOnExceptionToRoute)
+	        .to(InvalidNumberOnExceptionToRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/inoesc").id("inoesc-resource").description("Invalid number Self Contained, with on exception")
-	        .to(InvalidNumberRouteOnExceptionSelfContainedRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpInvalidNumberRouteOnExceptionSelfContainedRoute)
+	        .to(InvalidNumberRouteOnExceptionSelfContainedRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/intc").id("intc-resource").description("Invalid number, with try catch")
-	        .to(InvalidNumberTryCatchRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpInvalidNumberTryCatchRoute)
+	        .to(InvalidNumberTryCatchRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/te").id("intc-resource").description("Throw a Exception without error handling")
-	        .to(ErrorRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpErrorRoute)
+	        .to(ErrorRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/teoe").id("intc-resource").description("Implementation Throw a Exception and is handled by onException")
-	        .to(ErrorOnExceptionRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpErrorOnExceptionRoute)
+	        .to(ErrorOnExceptionRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/teoet").id("intc-resource").description("Call a route that throw an exception and handle it with caller onException, in thi case onException is ignored.")
-	        .to(ErrorOnExceptionToRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpErrorOnExceptionToRoute)
+	        .to(ErrorOnExceptionToRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/teoetc").id("intc-resource").description("Call a route that throw an exception and handle it with caller try/catch, in this case try/catch works.")
-	        .to(ErrorOnExceptionToTryCatchRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpErrorOnExceptionToTryCatchRoute)
+	        .to(ErrorOnExceptionToTryCatchRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/chbu").id("chbu-resource").description("Call backend HTTP using Undertow component")
-	        .to(CallHttpBackendUndertowRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpCallHttpBackendUndertowRoute)
+	        .to(CallHttpBackendUndertowRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/chbh").id("chbh-resource").description("Call backend HTTP using HTTP component")
-	        .to(CallHttpBackendHttpRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpCallHttpBackendHttpRoute)
+	        .to(CallHttpBackendHttpRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/schema/xml").id("sxc-resource").description("Call XML schema validation")
-	        .to(XmlValidationRoute.DIRECT)
-	        
+	        .route().routePolicy(mrpXmlValidationRoute)
+	        .to(XmlValidationRoute.DIRECT);
+
+        rest("/eh").id("http-endpoint").description("Error Handling rest service")
+        .consumes("application/json").produces("application/json")
 	        .post("/schema/json").id("sjc-resource").description("Call JSON schema validation")
+	        .route().routePolicy(mrpJsonValidationRoute)
 	        .to(JsonValidationRoute.DIRECT)
 	        
 	        ;

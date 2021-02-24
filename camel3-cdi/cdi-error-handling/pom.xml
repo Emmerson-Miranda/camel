@@ -373,7 +373,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>edu.emmerson.camel3.cdi.rmq.ErrorHandlingMainApp</mainClass>
+							<mainClass>edu.emmerson.camel3.cdi.eh.ErrorHandlingMainApp</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 					</archive>
