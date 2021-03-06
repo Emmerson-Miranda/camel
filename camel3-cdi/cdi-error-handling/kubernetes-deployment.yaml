@@ -4,10 +4,6 @@ metadata:
   name: cdi-error-handling-service
   labels:
     app: cdi-error-handling-service
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/"
-    prometheus.io/port: "8888"
 spec:
   ports:
   - name: http
@@ -31,7 +27,7 @@ metadata:
     version: v1
   name: cdi-error-handling
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: cdi-error-handling
@@ -41,6 +37,10 @@ spec:
       labels:
         app: cdi-error-handling
         version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8888"
     spec:
       containers:
       - image: emmerson/cdi-error-handling:1.2.0
