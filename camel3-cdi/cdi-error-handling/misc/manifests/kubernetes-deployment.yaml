@@ -5,6 +5,7 @@ metadata:
   labels:
     app: cdi-error-handling-service
 spec:
+  type: NodePort
   ports:
   - name: http
     port: 8080
@@ -27,7 +28,7 @@ metadata:
     version: v1
   name: cdi-error-handling
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: cdi-error-handling

@@ -7,10 +7,21 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: cdi-error-handling
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 4
   metrics:
   - type: Pods
     pods:
       metricName: camel3_noerrorroute_oneminuterate
       targetAverageValue: 100m
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: cdi-error-handling-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: cdi-error-handling

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+echo "Start"
+echo "-----"
+
+podnames=`kubectl get pods -l app=cdi-error-handling -o jsonpath --template='{range .items[*]}{.metadata.name}{"\n"}{end}'`
+
+echo "Prometheus metrics from PODs:"
+echo "----------------------------"
+for item in $podnames
+do
+
+        count=`kubectl exec -it $item -- curl http://localhost:8888 | grep 'camel3_noerrorroute_count{journey="NoErrorRoute",propname="Count",type="timers",}' | awk '{ print $2 }'`
+        count=$(awk '{print $1*$2}' <<<"${count} 1")
+        
+        oneminuterate=`kubectl exec -it $item -- curl http://localhost:8888 | grep 'camel3_noerrorroute_oneminuterate{journey="NoErrorRoute",propname="OneMinuteRate",type="timers",}' | awk '{ print $2 }'`
+        oneminuterate2=$(awk '{print $1*$2}' <<<"${oneminuterate} 1")
+
+        linea=""
+        linea+="Pod: "
+        linea+="$item "
+        linea+="Count: "
+        linea+="$count "
+        linea+="OneMinuteRate: "
+        linea+="$oneminuterate2 "
+
+        echo "$linea"
+done
+
+echo "Prometheus-Adapter metrics:"
+echo "----------------------------"
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_oneminuterate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+
+echo "-----"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_fifteenminuterate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+
+echo "-----"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_count_sum"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+
+echo "-----"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_mean"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+
+echo "-----"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_meanrate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+
+echo "-----"
+echo "End"

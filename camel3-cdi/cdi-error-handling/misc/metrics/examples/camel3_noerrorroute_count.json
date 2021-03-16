@@ -1,0 +1,33 @@
+{
+  "kind": "MetricValueList",
+  "apiVersion": "custom.metrics.k8s.io/v1beta1",
+  "metadata": {
+    "selfLink": "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/%2A/camel3_noerrorroute_count"
+  },
+  "items": [
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "cdi-error-handling-8bdf5db67-lkjtj",
+        "apiVersion": "/v1"
+      },
+      "metricName": "camel3_noerrorroute_count",
+      "timestamp": "2021-03-09T00:05:15Z",
+      "value": "321",
+      "selector": null
+    },
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "cdi-error-handling-8bdf5db67-xknlg",
+        "apiVersion": "/v1"
+      },
+      "metricName": "camel3_noerrorroute_count",
+      "timestamp": "2021-03-09T00:05:15Z",
+      "value": "59",
+      "selector": null
+    }
+  ]
+}

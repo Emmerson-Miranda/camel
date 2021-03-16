@@ -22,6 +22,28 @@ If you want integrate your microservice with Prometheus please modify following 
 
 ## Testing 
 
+### Simple test using K8S service
+
+```
+minikube service cdi-error-handling-service --url
+
+export PORT= copy port from output of above command
+export HOST=$(minikube ip)
+curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -HHost:ceh.istio.com http://$HOST:$PORT/eh/noerror
+```
+
+### Simple test using Istio
+
+kubectl get namespace -L istio-injection
+kubectl label namespace default istio-injection=enabled --overwrite
+
+kubectl apply -f ./misc/manifests/kubernetes-deployment.yaml  
+kubectl apply -f ./misc/manifests/kubernetes-istio.yaml  
+
+
+curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -HHost:ceh.istio.com http://$INGRESS_HOST:$INGRESS_PORT/eh/noerror
+
+
 ### Load testing
 
  ```
@@ -29,14 +51,15 @@ sudo apt-get update
 
 sudo apt-get -y install apache2-utils
 
-ab -n 1000 -c 100 -p payloads/NoErrorRoute_happy_path.json -T application/json http://0.0.0.0:8080/eh/noerror
+ab -n 1000 -c 100 -p misc/payloads/NoErrorRoute_happy_path.json -T application/json http://0.0.0.0:8080/eh/noerror
  ```
  
 After run some tests, from Prometheus console you can see some of the metrics exposed by camel.
 
-<img src="./images/prometheus_camel_5minrate.png" alt="5 Minutes rate" width="50%"/>
+<img src="./misc/images/prometheus_camel_5minrate.png" alt="5 Minutes rate" width="50%"/>
 
-<img src="./images/prometheus_camel_count.png" alt="Request counter" width="50%"/>
+<img src="./misc/images/prometheus_camel_count.png" alt="Request counter" width="50%"/>
+
 
 
 ### Generic testing
