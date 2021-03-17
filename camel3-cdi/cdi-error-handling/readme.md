@@ -22,51 +22,44 @@ If you want integrate your microservice with Prometheus please modify following 
 
 ## Testing 
 
-### Simple test using K8S service
+### Simple test using K8S service (Without istio)
 
 ```
+kubectl get namespace -L istio-injection
+kubectl label namespace default istio-injection=disabled --overwrite
+kubectl apply -f ./misc/manifests/kubernetes-deployment.yaml  
+kubectl apply -f ./misc/manifests/kubernetes-hpa.yaml  
+
 minikube service cdi-error-handling-service --url
 
-export PORT= copy port from output of above command
+export PORT=<copy port from output of above command>
 export HOST=$(minikube ip)
-curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -HHost:ceh.istio.com http://$HOST:$PORT/eh/noerror
+curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" http://$HOST:$PORT/eh/noerror
 ```
 
-### Simple test using Istio
+### Simple test using Istio (The Pod has injected Istio sidecar)
 
+```
 kubectl get namespace -L istio-injection
 kubectl label namespace default istio-injection=enabled --overwrite
-
 kubectl apply -f ./misc/manifests/kubernetes-deployment.yaml  
 kubectl apply -f ./misc/manifests/kubernetes-istio.yaml  
+kubectl apply -f ./misc/manifests/kubernetes-hpa.yaml  
 
 minikube service istio-ingressgateway -n istio-system --url
-export INGRESS_PORT=copy the port from one of the ports listed by the above command
+export INGRESS_PORT=<copy port from output of above command>
 export INGRESS_HOST=$(minikube ip)
 
 
 curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -HHost:ceh.istio.com http://$INGRESS_HOST:$INGRESS_PORT/eh/noerror
-
+```
 
 ### Load testing
 
- ```
-sudo apt-get update
-
-sudo apt-get -y install apache2-utils
-
-ab -n 1000 -c 100 -p misc/payloads/NoErrorRoute_happy_path.json -T application/json http://0.0.0.0:8080/eh/noerror
- ```
- 
-After run some tests, from Prometheus console you can see some of the metrics exposed by camel.
-
-<img src="./misc/images/prometheus_camel_5minrate.png" alt="5 Minutes rate" width="50%"/>
-
-<img src="./misc/images/prometheus_camel_count.png" alt="Request counter" width="50%"/>
+Use JMeter project.
 
 
-
-### Generic testing
+### Generic testing∫
 
 NoErrorRoute Happy path.
 
