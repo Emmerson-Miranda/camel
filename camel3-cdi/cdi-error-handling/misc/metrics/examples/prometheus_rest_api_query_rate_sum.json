@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "app": "cdi-error-handling"
+        },
+        "value": [
+          1615938915.354,
+          "12.018272955633362"
+        ]
+      }
+    ]
+  }
+}

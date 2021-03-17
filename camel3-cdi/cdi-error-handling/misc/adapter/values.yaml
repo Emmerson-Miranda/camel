@@ -61,6 +61,16 @@ resources: {}
 rules:
   default: false
   custom: 
+  - seriesQuery: 'istio_requests_total{app="cdi-error-handling"}'
+    resources:
+      overrides:
+        kubernetes_namespace: {resource: "namespace"}
+        kubernetes_pod_name: {resource: "pod"}
+    name:
+      matches: "^(.*)"
+      as: "${1}"
+    metricsQuery: 'istio_requests_total'
+
   - seriesQuery: 'istio_requests_total{app="cdi-error-handling", response_code="200"}'
     resources:
       overrides:
@@ -68,146 +78,158 @@ rules:
         kubernetes_pod_name: {resource: "pod"}
     name:
       matches: "^(.*)"
-      as: "${1}_cdi_error_handling"
-    metricsQuery: 'rate(istio_requests_total[1m])'
-  - seriesQuery: 'camel3_noerrorroute_oneminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_fiveminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_fifteenminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+      as: "${1}_rate"
+    metricsQuery: 'rate(istio_requests_total[5m])'
 
-  - seriesQuery: 'camel3_noerrorroute_50thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+  - seriesQuery: 'istio_requests_total{app="cdi-error-handling"}'
     resources:
       overrides:
         kubernetes_namespace: {resource: "namespace"}
         kubernetes_pod_name: {resource: "pod"}
     name:
       matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_75thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_95thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_98thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_99thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_999thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+      as: "${1}_sum_rate"
+    metricsQuery: 'sum(rate(istio_requests_total{app="cdi-error-handling"}[5m])) by (<<.GroupBy>>)'
+ 
 
-  - seriesQuery: 'camel3_noerrorroute_min{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_max{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_mean{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_stddev{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-  - seriesQuery: 'camel3_noerrorroute_meanrate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
-    
-  - seriesQuery: 'camel3_noerrorroute_count'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}_sum"
-    metricsQuery: 'sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_oneminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_fiveminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_fifteenminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#
+#  - seriesQuery: 'camel3_noerrorroute_50thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_75thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_95thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_98thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_99thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_999thpercentile{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#
+#  - seriesQuery: 'camel3_noerrorroute_min{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_max{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_mean{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_stddev{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#  - seriesQuery: 'camel3_noerrorroute_meanrate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}"
+#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+#    
+#  - seriesQuery: 'camel3_noerrorroute_count'
+#    resources:
+#      overrides:
+#        kubernetes_namespace: {resource: "namespace"}
+#        kubernetes_pod_name: {resource: "pod"}
+#    name:
+#      matches: "^(.*)"
+#      as: "${1}_sum"
+#    metricsQuery: 'sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
 
   # Mounts a configMap with pre-generated rules for use. Overrides the
   # default, custom, external and resource entries

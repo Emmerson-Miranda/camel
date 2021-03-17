@@ -40,6 +40,10 @@ kubectl label namespace default istio-injection=enabled --overwrite
 kubectl apply -f ./misc/manifests/kubernetes-deployment.yaml  
 kubectl apply -f ./misc/manifests/kubernetes-istio.yaml  
 
+minikube service istio-ingressgateway -n istio-system --url
+export INGRESS_PORT=copy the port from one of the ports listed by the above command
+export INGRESS_HOST=$(minikube ip)
+
 
 curl -v -d "{\"value\": \"value without error\"}" -H "Content-Type: application/json" -HHost:ceh.istio.com http://$INGRESS_HOST:$INGRESS_PORT/eh/noerror
 

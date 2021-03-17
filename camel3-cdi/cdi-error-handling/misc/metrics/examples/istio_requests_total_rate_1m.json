@@ -1,0 +1,45 @@
+{
+  "kind": "MetricValueList",
+  "apiVersion": "custom.metrics.k8s.io/v1beta1",
+  "metadata": {
+    "selfLink": "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/%2A/istio_requests_total_cdi_error_handling_2"
+  },
+  "items": [
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "cdi-error-handling-8bdf5db67-55h2z",
+        "apiVersion": "/v1"
+      },
+      "metricName": "istio_requests_total_cdi_error_handling_2",
+      "timestamp": "2021-03-16T21:35:45Z",
+      "value": "36338m",
+      "selector": null
+    },
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "cdi-error-handling-8bdf5db67-5n957",
+        "apiVersion": "/v1"
+      },
+      "metricName": "istio_requests_total_cdi_error_handling_2",
+      "timestamp": "2021-03-16T21:35:45Z",
+      "value": "88891m",
+      "selector": null
+    },
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "cdi-error-handling-8bdf5db67-bqpn8",
+        "apiVersion": "/v1"
+      },
+      "metricName": "istio_requests_total_cdi_error_handling_2",
+      "timestamp": "2021-03-16T21:35:45Z",
+      "value": "19525m",
+      "selector": null
+    }
+  ]
+}
