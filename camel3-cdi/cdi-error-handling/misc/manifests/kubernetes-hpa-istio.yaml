@@ -1,0 +1,27 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cdi-error-handling-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cdi-error-handling
+  minReplicas: 1
+  maxReplicas: 6
+  metrics:
+  - type: Pods
+    pods:
+      metricName: istio_requests_total_cdi_error_handling_rate
+      targetAverageValue: 200000m
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: cdi-error-handling-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: cdi-error-handling

@@ -32,10 +32,7 @@ done
 echo "Prometheus-Adapter metrics:"
 echo "----------------------------"
 
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/istio_requests_total_rate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
-
-echo "-----"
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/istio_requests_total_sum_rate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/istio_requests_total_cdi_error_handling_rate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
 echo "-----"
 echo "End"

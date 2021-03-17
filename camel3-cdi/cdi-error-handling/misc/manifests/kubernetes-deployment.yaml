@@ -28,7 +28,7 @@ metadata:
     version: v1
   name: cdi-error-handling
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: cdi-error-handling

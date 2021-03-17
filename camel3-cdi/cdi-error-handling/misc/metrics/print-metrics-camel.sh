@@ -34,17 +34,17 @@ echo "----------------------------"
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_oneminuterate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
-echo "-----"
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_fifteenminuterate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+#echo "-----"
+#kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_fifteenminuterate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
-echo "-----"
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_count_sum"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+#echo "-----"
+#kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_count_sum"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
-echo "-----"
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_mean"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+#echo "-----"
+#kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_mean"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
-echo "-----"
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_meanrate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
+#echo "-----"
+#kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/camel3_noerrorroute_meanrate"  | jq '.items[] | "Pod: " + .describedObject.name + " " + .metricName + " " + .value' |  sed "s/\"//g"
 
 echo "-----"
 echo "End"

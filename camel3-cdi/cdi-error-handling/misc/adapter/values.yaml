@@ -68,39 +68,19 @@ rules:
         kubernetes_pod_name: {resource: "pod"}
     name:
       matches: "^(.*)"
-      as: "${1}"
-    metricsQuery: 'istio_requests_total'
-
-  - seriesQuery: 'istio_requests_total{app="cdi-error-handling", response_code="200"}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}_rate"
-    metricsQuery: 'rate(istio_requests_total[5m])'
-
-  - seriesQuery: 'istio_requests_total{app="cdi-error-handling"}'
-    resources:
-      overrides:
-        kubernetes_namespace: {resource: "namespace"}
-        kubernetes_pod_name: {resource: "pod"}
-    name:
-      matches: "^(.*)"
-      as: "${1}_sum_rate"
-    metricsQuery: 'sum(rate(istio_requests_total{app="cdi-error-handling"}[5m])) by (<<.GroupBy>>)'
+      as: "${1}_cdi_error_handling_rate"
+    metricsQuery: 'sum(rate(istio_requests_total{app="cdi-error-handling"}[30s])) by (<<.GroupBy>>)'
  
 
-#  - seriesQuery: 'camel3_noerrorroute_oneminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
-#    resources:
-#      overrides:
-#        kubernetes_namespace: {resource: "namespace"}
-#        kubernetes_pod_name: {resource: "pod"}
-#    name:
-#      matches: "^(.*)"
-#      as: "${1}"
-#    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+  - seriesQuery: 'camel3_noerrorroute_oneminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
+    resources:
+      overrides:
+        kubernetes_namespace: {resource: "namespace"}
+        kubernetes_pod_name: {resource: "pod"}
+    name:
+      matches: "^(.*)"
+      as: "${1}"
+    metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
 #  - seriesQuery: 'camel3_noerrorroute_fiveminuterate{kubernetes_namespace!="",kubernetes_pod_name!=""}'
 #    resources:
 #      overrides:
