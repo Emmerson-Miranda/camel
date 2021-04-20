@@ -7,7 +7,6 @@ spec:
     name: cdi-error-handling
   minReplicaCount: 1
   maxReplicaCount: 10
-  restoreToOriginalReplicaCount: true
   triggers:
   - type: prometheus
     metadata:
@@ -15,5 +14,12 @@ spec:
       metricName: istio_requests_total
       threshold: '100'
       query: sum(rate(istio_requests_total{app="cdi-error-handling"}[1m]))
+  - type: cron
+    metadata:
+      # Required
+      timezone: Europe/London  # The acceptable values would be a value from the IANA Time Zone Database.
+      start: 53 * * * *       # Every hour on the 30th minute
+      end: 59 * * * *         # Every hour on the 45th minute
+      desiredReplicas: "20"
 
 #https://keda.sh/docs/2.2/concepts/scaling-deployments/
