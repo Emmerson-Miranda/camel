@@ -15,6 +15,7 @@ import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberRouteOnExceptionSelfContai
 import edu.emmerson.camel3.cdi.eh.routes.InvalidNumberTryCatchRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NoErrorRoute;
 import edu.emmerson.camel3.cdi.eh.routes.NumberRoute;
+import edu.emmerson.camel3.cdi.eh.routes.YamlRoute;
 import edu.emmerson.camel3.cdi.eh.routes.json.JsonValidationRoute;
 import edu.emmerson.camel3.cdi.eh.routes.xml.XmlValidationRoute;
 
@@ -131,9 +132,12 @@ public class RestRouteBuilder extends RouteBuilder {
 	        .post("/schema/json").id("sjc-resource").description("Call JSON schema validation")
 	        .route().routePolicy(mrpJsonValidationRoute)
 	        .to(JsonValidationRoute.DIRECT)
-	        
 	        ;
        
+        rest("/yaml").id("http-yaml-endpoint").description("Yaml endpoint")
+	        .get("/simple").id("yaml-simple-resource").description("Simple")
+	        .to(YamlRoute.DIRECT)
+	        ;
 
     }
 
