@@ -13,29 +13,28 @@ public class YamlRoute extends RouteBuilder {
 	public static final String DIRECT = "direct:" + YamlRoute.class.getSimpleName();
 
 	public static final String ROUTE_ID = YamlRoute.class.getSimpleName();
-	
+
 	@Override
 	public void configure() throws Exception {
 		from(DIRECT)
-        .routeId(ROUTE_ID)
-        .log("Route Start :: ${exchangeId} :: ${routeId}")
-        //.unmarshal().json(JsonLibrary.Jackson)
-        .process( e -> {
-        	File file = new File("src/main/resources/yaml/YmlRouteData.yaml");
-        	System.out.println(file.getAbsolutePath());
-        	FileInputStream fis = new FileInputStream(file);
-      
-        	Yaml yaml = new Yaml();
-        	Map<String, Object> data = yaml.load(fis);
-        	data.put("extraField", "extra value");
-        	System.out.println(data);
-        	
-        	e.getIn().setBody(data);
-        })
-        //.marshal().json(JsonLibrary.Jackson) //works
-        .marshal().yaml(YAMLLibrary.SnakeYAML)
-        .log("Route End :: ${exchangeId} :: ${routeId}")
-        ;
+			.routeId(ROUTE_ID)
+			.log("Route Start :: ${exchangeId} :: ${routeId}")
+			// .unmarshal().json(JsonLibrary.Jackson)
+			.process(e -> {
+				File file = new File("src/main/resources/yaml/YmlRouteData.yaml");
+				System.out.println(file.getAbsolutePath());
+				FileInputStream fis = new FileInputStream(file);
+
+				Yaml yaml = new Yaml();
+				Map<String, Object> data = yaml.load(fis);
+				data.put("extraField", "extra value");
+				System.out.println(data);
+
+				e.getIn().setBody(data);
+			})
+			// .marshal().json(JsonLibrary.Jackson) //works
+			.marshal().yaml(YAMLLibrary.SnakeYAML)
+			.log("Route End :: ${exchangeId} :: ${routeId}");
 	}
 
 }
