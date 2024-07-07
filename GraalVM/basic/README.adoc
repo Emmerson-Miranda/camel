@@ -39,7 +39,8 @@ $ ./target/camel-example-basic-image
 ----
 
 
-=== Environment
+=== Changes
+
 Changes done to make possible generate native images are mainly in pom.xml:
 
 1) replace log4j and use logback.
