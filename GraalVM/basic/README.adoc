@@ -1,0 +1,78 @@
+== Camel Basic Example
+
+=== Introduction
+
+This is a very basic example that shows how to get started with Camel.
+
+It was downloaded from https://github.com/apache/camel-examples/tree/main/basic and modified to generate a native executable.
+
+
+=== Build
+
+You will need to compile this example first:
+
+[source,sh]
+----
+$ mvn compile
+----
+
+=== Generating native executable
+
+To generate the native executable first you have to run the application with native-image-agent,
+after that package with native profile enable to generate the executable.
+
+[source,sh]
+----
+$ mvn -Pnative -Dagent=true -DskipTests -DskipNativeBuild=true package exec:exec@java-agent
+----
+When you have dynamic code you have to run all possible dynamic scenarios otherwise the executable will fail in runtime.
+
+[source,sh]
+----
+$ mvn -Pnative -Dagent=true -DskipTests package exec:exec@native
+----
+
+After the generation we can run the native executable.
+[source,sh]
+----
+$ ./target/camel-example-basic-image
+----
+
+
+=== Environment
+Changes done to make possible generate native images are mainly in pom.xml:
+
+1) replace log4j and use logback.
+
+2) add native maven profile.
+
+3) add maven-jar-plugin and exec-maven-plugin to build section.
+
+=== Environment
+
+Java
+[source,sh]
+----
+$ java -version
+java version "17.0.11" 2024-04-16 LTS
+Java(TM) SE Runtime Environment Oracle GraalVM 17.0.11+7.1 (build 17.0.11+7-LTS-jvmci-23.0-b34)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.11+7.1 (build 17.0.11+7-LTS-jvmci-23.0-b34, mixed mode, sharing)
+----
+
+Maven
+[source,sh]
+----
+$ mvn -version
+Apache Maven 3.9.6 (bc0240f3c744dd6b6ec2920b3cd08dcc295161ae)
+----
+
+
+=== Other links
+
+Build a Native Executable with the Tracing Agent
+https://www.graalvm.org/latest/reference-manual/native-image/guides/use-reachability-metadata-repository-maven/
+
+Tracing agent
+https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/
+
+
